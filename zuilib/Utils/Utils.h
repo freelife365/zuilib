@@ -4,11 +4,12 @@
 #pragma once
 
 namespace Zuilib {
-	class ZUILIB_API STRINGorID
+	//统一资源ID, 字符串类型和整型统一输出为字符串类型
+	class ZUILIB_API StringOrID
 	{
 	public:
-		STRINGorID(LPCWSTR lpString);
-		STRINGorID(unsigned int nID);
+		StringOrID(LPCWSTR lpString);
+		StringOrID(unsigned int nID);
 
 		LPCWSTR m_lpstr;
 	};

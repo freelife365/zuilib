@@ -3,11 +3,13 @@
 
 namespace Zuilib
 {
-    STRINGorID::STRINGorID(LPCWSTR lpString) : m_lpstr(lpString)
+	StringOrID::StringOrID(LPCWSTR lpString) 
+		: m_lpstr(lpString)
     {
     }
 
-    STRINGorID::STRINGorID(unsigned int nID) : m_lpstr(MAKEINTRESOURCE(nID))
+	StringOrID::StringOrID(unsigned int nID) 
+		: m_lpstr(MAKEINTRESOURCE(nID))
     {
     }
 

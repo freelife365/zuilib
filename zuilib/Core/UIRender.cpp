@@ -325,7 +325,7 @@ void CRenderEngine::AdjustImage(bool bUseHSL, TImageInfo* imageInfo, short H, sh
 	}
 }
 
-TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCWSTR type, DWORD mask)
+TImageInfo* CRenderEngine::LoadImage(StringOrID bitmap, LPCWSTR type, DWORD mask)
 {
     LPBYTE pData = NULL;
     DWORD dwSize = 0;

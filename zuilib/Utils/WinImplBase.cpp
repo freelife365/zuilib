@@ -319,7 +319,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	CControlUI* pRoot=NULL;
 	if (GetResourceType()==UILIB_RESOURCE)
 	{
-		STRINGorID xml(_ttoi(GetSkinFile().GetData()));
+		StringOrID xml(_ttoi(GetSkinFile().GetData()));
 		pRoot = builder.Create(xml, _T("xml"), this, &m_PaintManager);
 	}
 	else

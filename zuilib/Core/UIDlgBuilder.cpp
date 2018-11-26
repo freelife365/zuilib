@@ -9,7 +9,7 @@ CDialogBuilder::CDialogBuilder()
 
 }
 
-CControlUI* CDialogBuilder::Create(STRINGorID xml, LPCWSTR type, IDialogBuilderCallback* pCallback, 
+CControlUI* CDialogBuilder::Create(StringOrID xml, LPCWSTR type, IDialogBuilderCallback* pCallback,
                                    CPaintManagerUI* pManager, CControlUI* pParent)
 {
 	//资源ID为0-65535，两个字节；字符串指针为4个字节

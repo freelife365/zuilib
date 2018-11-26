@@ -16,7 +16,7 @@ class ZUILIB_API CDialogBuilder
 {
 public:
     CDialogBuilder();
-    CControlUI* Create(STRINGorID xml, LPCWSTR type = NULL, IDialogBuilderCallback* pCallback = NULL,
+    CControlUI* Create(StringOrID xml, LPCWSTR type = NULL, IDialogBuilderCallback* pCallback = NULL,
         CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
     CControlUI* Create(IDialogBuilderCallback* pCallback = NULL, 
 		CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
