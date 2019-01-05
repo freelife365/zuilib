@@ -1451,6 +1451,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
     case WM_MOUSEWHEEL:
         {
             if( m_pRoot == NULL ) break;
+			if(::GetFocus() != m_hWndPaint) break;
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             ::ScreenToClient(m_hWndPaint, &pt);
             m_ptLastMousePos = pt;
