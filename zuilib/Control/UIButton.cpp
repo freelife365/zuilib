@@ -125,7 +125,7 @@ namespace Zuilib
 		}
 		if( event.Type == UIEVENT_SETCURSOR )
 		{
-			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+			::SetCursor(::LoadCursor(NULL, IDC_HAND));
 			return;
 		}
 		if( event.Type == UIEVENT_TIMER  && event.wParam == FADE_TIMERID ) 
