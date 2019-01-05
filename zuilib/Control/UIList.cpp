@@ -1077,6 +1077,7 @@ bool CListBodyUI::SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData, int& iC
 {
 	if (!pfnCompare) return false;
 	m_pCompareFunc = pfnCompare;
+	m_compareData = dwData;
 	CControlUI *pCurSelControl = GetItemAt(iCurSel);
 	CControlUI **pData = (CControlUI **)m_items.GetData();
 	qsort_s(m_items.GetData(), m_items.GetSize(), sizeof(CControlUI*), CListBodyUI::ItemComareFunc, this);
@@ -1084,7 +1085,7 @@ bool CListBodyUI::SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData, int& iC
 	IListItemUI *pItem = NULL;
 	for (int i = 0; i < m_items.GetSize(); ++i)
 	{
-		pItem = (IListItemUI*)(static_cast<CControlUI*>(m_items[i])->GetInterface(TEXT("ListItem")));
+		pItem = (IListItemUI*)(static_cast<CControlUI*>(m_items[i])->GetInterface(DUI_CTR_ILISTITEM));
 		if (pItem)
 		{
 			pItem->SetIndex(i);
@@ -1765,7 +1766,7 @@ void CListHeaderItemUI::DoEvent(TEventUI& event)
     {
         RECT rcSeparator = GetThumbRect();
         if( IsEnabled() && m_bDragable && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-            ::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+            ::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
             return;
         }
     }
@@ -2007,7 +2008,8 @@ bool CListElementUI::Select(bool bSelect, bool bTriggerEvent)
     if( !IsEnabled() ) return false;
     if( bSelect == m_bSelected ) return true;
     m_bSelected = bSelect;
-    if( bSelect && m_pOwner != NULL ) m_pOwner->SelectItem(m_iIndex, bTriggerEvent);
+    if( bSelect && m_pOwner != NULL ) 
+		m_pOwner->SelectItem(m_iIndex, bSelect, bTriggerEvent);
     Invalidate();
 
     return true;
@@ -2401,7 +2403,7 @@ void CListTextElementUI::DoEvent(TEventUI& event)
     if( event.Type == UIEVENT_SETCURSOR ) {
         for( int i = 0; i < m_nLinks; i++ ) {
             if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
-                ::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+                ::SetCursor(::LoadCursor(NULL, IDC_HAND));
                 return;
             }
         }      
@@ -2753,7 +2755,8 @@ bool CListContainerElementUI::Select(bool bSelect, bool bTriggerEvent)
     if( !IsEnabled() ) return false;
     if( bSelect == m_bSelected ) return true;
     m_bSelected = bSelect;
-    if( bSelect && m_pOwner != NULL ) m_pOwner->SelectItem(m_iIndex, bTriggerEvent);
+    if( bSelect && m_pOwner != NULL ) 
+		m_pOwner->SelectItem(m_iIndex, bSelect, bTriggerEvent);
     Invalidate();
 
     return true;
