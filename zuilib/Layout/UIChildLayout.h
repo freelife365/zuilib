@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CChildLayoutUI : public CContainerUI
 	{
@@ -20,5 +20,5 @@ namespace Zuilib
 	private:
 		CDuiString m_pstrXMLFile;
 	};
-} // namespace Zuilib
+} // namespace zuilib
 #endif // __UICHILDLAYOUT_H__
