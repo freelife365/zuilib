@@ -2,7 +2,7 @@
 //////////////BEGIN消息映射宏定义////////////////////////////////////////////////////
 ///
 
-namespace Zuilib
+namespace zuilib
 {
 
 #define _USEIMM					1
@@ -26,7 +26,7 @@ typedef struct tagTNotifyUI
 	CDuiString sType;
 	CDuiString sVirtualWnd;
 	CControlUI* pSender;
-	DWORD dwTimestamp;
+	ULONGLONG dwTimestamp;
 	POINT ptMouse;
 	WPARAM wParam;
 	LPARAM lParam;
@@ -96,8 +96,8 @@ struct DUI_MSGMAP
 	const DUI_MSGMAP_ENTRY* lpEntries;
 };
 
-//结构定义
-struct DUI_MSGMAP_ENTRY //定义一个结构体，来存放消息信息
+//定义一个结构体，来存放消息信息
+struct DUI_MSGMAP_ENTRY 
 {
 	CDuiString sMsgType;          // DUI消息类型
 	CDuiString sCtrlName;         // 控件名称
@@ -197,7 +197,7 @@ protected:                                                                \
 
 //定义selectchanged消息的控件名称--执行函数宏
 #define DUI_ON_SELECTCHANGED_CTRNAME(ctrname,memberFxn)                   \
-    { DUI_MSGTYPE_SELECTCHANGED,ctrname,DuiSig_vn,(DUI_PMSG)&memberFxn }, \
+	{ DUI_MSGTYPE_SELECTCHANGED,ctrname,DuiSig_vn,(DUI_PMSG)&memberFxn }, \
 
 
 //定义killfocus消息的控件名称--执行函数宏
@@ -295,5 +295,5 @@ protected:                                                                \
 //////////////END控件名称宏定义//////////////////////////////////////////////////
 
 
-}// namespace Zuilib
+}// namespace zuilib
 
