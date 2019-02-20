@@ -2,7 +2,7 @@
 #include "UITreeView.h"
 
 #pragma warning( disable: 4251 )
-namespace Zuilib
+namespace zuilib
 {
 	CTreeNodeUI::CTreeNodeUI( CTreeNodeUI* _ParentNode /*= NULL*/ )
 	{
@@ -511,8 +511,8 @@ namespace Zuilib
 	{
 		if (!pControl) return false;
 
-        CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
-        if (pTreeNode == NULL) return false;
+		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
+		if (pTreeNode == NULL) return false;
 
 		pTreeNode->OnNotify += MakeDelegate(this,&CTreeViewUI::OnDBClickItem);
 		pTreeNode->GetFolderButton()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnFolderChanged);
@@ -538,21 +538,21 @@ namespace Zuilib
 		return true;
 	}
 
-    bool CTreeViewUI::AddAt(CControlUI* pControl, int iIndex)
-    {
-        if (!pControl) return false;
+	bool CTreeViewUI::AddAt(CControlUI* pControl, int iIndex)
+	{
+		if (!pControl) return false;
 
-        CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
-        if (pTreeNode == NULL) return false;
-        return AddAt(pTreeNode, iIndex) >= 0;
-    }
+		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
+		if (pTreeNode == NULL) return false;
+		return AddAt(pTreeNode, iIndex) >= 0;
+	}
 
 	bool CTreeViewUI::Remove(CControlUI* pControl, bool bDoNotDestroy)
 	{
-        if (!pControl) return false;
+		if (!pControl) return false;
 
-        CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
-        if (pTreeNode == NULL) return CListUI::Remove(pControl, bDoNotDestroy);
+		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
+		if (pTreeNode == NULL) return CListUI::Remove(pControl, bDoNotDestroy);
 
 		if(pTreeNode->GetCountChild() > 0)
 		{
@@ -570,11 +570,11 @@ namespace Zuilib
 
 	bool CTreeViewUI::RemoveAt( int iIndex, bool bDoNotDestroy )
 	{
-        CControlUI* pControl = GetItemAt(iIndex);
-        if (pControl == NULL) return false;
+		CControlUI* pControl = GetItemAt(iIndex);
+		if (pControl == NULL) return false;
 
-        CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
-        if (pTreeNode == NULL) return CListUI::Remove(pControl, bDoNotDestroy);
+		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
+		if (pTreeNode == NULL) return CListUI::Remove(pControl, bDoNotDestroy);
 
 		return Remove(pTreeNode);
 	}
@@ -584,42 +584,42 @@ namespace Zuilib
 		CListUI::RemoveAll();
 	}
 
-    long CTreeViewUI::AddAt(CTreeNodeUI* pControl, int iIndex)
-    {
-        if (!pControl) return -1;
+	long CTreeViewUI::AddAt(CTreeNodeUI* pControl, int iIndex)
+	{
+		if (!pControl) return -1;
 
-        CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
-        if (pTreeNode == NULL) return -1;
+		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
+		if (pTreeNode == NULL) return -1;
 
-        CTreeNodeUI* pParent = static_cast<CTreeNodeUI*>(GetItemAt(iIndex));
-        if(!pParent) return -1;
+		CTreeNodeUI* pParent = static_cast<CTreeNodeUI*>(GetItemAt(iIndex));
+		if(!pParent) return -1;
 
-        pTreeNode->OnNotify += MakeDelegate(this,&CTreeViewUI::OnDBClickItem);
-        pTreeNode->GetFolderButton()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnFolderChanged);
-        pTreeNode->GetCheckBox()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnCheckBoxChanged);
+		pTreeNode->OnNotify += MakeDelegate(this,&CTreeViewUI::OnDBClickItem);
+		pTreeNode->GetFolderButton()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnFolderChanged);
+		pTreeNode->GetCheckBox()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnCheckBoxChanged);
 
-        pTreeNode->SetVisibleFolderBtn(m_bVisibleFolderBtn);
-        pTreeNode->SetVisibleCheckBtn(m_bVisibleCheckBtn);
+		pTreeNode->SetVisibleFolderBtn(m_bVisibleFolderBtn);
+		pTreeNode->SetVisibleCheckBtn(m_bVisibleCheckBtn);
 
-        if(m_uItemMinWidth > 0) pTreeNode->SetMinWidth(m_uItemMinWidth);
+		if(m_uItemMinWidth > 0) pTreeNode->SetMinWidth(m_uItemMinWidth);
 
-        CListUI::AddAt(pTreeNode,iIndex);
+		CListUI::AddAt(pTreeNode,iIndex);
 
-        if(pTreeNode->GetCountChild() > 0)
-        {
-            int nCount = pTreeNode->GetCountChild();
-            for(int nIndex = 0;nIndex < nCount;nIndex++)
-            {
-                CTreeNodeUI* pNode = pTreeNode->GetChildNode(nIndex);
-                if(pNode)
-                    return AddAt(pNode,iIndex+1);
-            }
-        }
-        else
-            return iIndex+1;
+		if(pTreeNode->GetCountChild() > 0)
+		{
+			int nCount = pTreeNode->GetCountChild();
+			for(int nIndex = 0;nIndex < nCount;nIndex++)
+			{
+				CTreeNodeUI* pNode = pTreeNode->GetChildNode(nIndex);
+				if(pNode)
+					return AddAt(pNode,iIndex+1);
+			}
+		}
+		else
+			return iIndex+1;
 
-        return -1;
-    }
+		return -1;
+	}
 
 	bool CTreeViewUI::AddAt( CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode )
 	{

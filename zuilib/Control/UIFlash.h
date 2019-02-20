@@ -9,7 +9,7 @@
 #include "Utils/FlashEventHandler.h"
 #include "Utils/flash11.tlh"
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CFlashUI
 		: public CActiveXUI

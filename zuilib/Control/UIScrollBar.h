@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CScrollBarUI : public CControlUI
 	{
@@ -28,8 +28,8 @@ namespace Zuilib
 		void SetScrollPos(int nPos, bool bTriggerEvent=true);
 		int GetLineSize() const;
 		void SetLineSize(int nSize);
-        int GetScrollUnit() const;
-        void SetScrollUnit(int iUnit);
+		int GetScrollUnit() const;
+		void SetScrollUnit(int iUnit);
 
 		bool GetShowButton1();
 		void SetShowButton1(bool bShow);
@@ -110,7 +110,7 @@ namespace Zuilib
 		int m_nRange;
 		int m_nScrollPos;
 		int m_nLineSize;
-        int m_nScrollUnit;
+		int m_nScrollUnit;
 		CContainerUI* m_pOwner;
 		POINT ptLastMouse;
 		int m_nLastScrollPos;

@@ -5,7 +5,7 @@
 #include "Layout/UIVerticalLayout.h"
 #include "Layout/UIHorizontalLayout.h"
 
-namespace Zuilib {
+namespace zuilib {
 
 typedef int (CALLBACK *PULVCompareFunc)(UINT_PTR, UINT_PTR, UINT_PTR);
 
@@ -15,73 +15,73 @@ class CListHeaderUI;
 
 typedef struct tagTListInfoUI
 {
-    int nColumns;
-    RECT rcColumn[UILIST_MAX_COLUMNS];
-    UINT uFixedHeight; 
-    int nFont;
-    UINT uTextStyle;
-    RECT rcTextPadding;
-    DWORD dwTextColor;
-    DWORD dwBkColor;
-    TDrawInfo diBk;
-    bool bAlternateBk;
-    DWORD dwSelectedTextColor;
-    DWORD dwSelectedBkColor;
-    TDrawInfo diSelected;
-    DWORD dwHotTextColor;
-    DWORD dwHotBkColor;
-    TDrawInfo diHot;
-    DWORD dwDisabledTextColor;
-    DWORD dwDisabledBkColor;
-    TDrawInfo diDisabled;
-    int iHLineSize;
-    DWORD dwHLineColor;
-    int iVLineSize;
-    DWORD dwVLineColor;
-    bool bShowHtml;
-    bool bMultiExpandable;
+	int nColumns;
+	RECT rcColumn[UILIST_MAX_COLUMNS];
+	UINT uFixedHeight; 
+	int nFont;
+	UINT uTextStyle;
+	RECT rcTextPadding;
+	DWORD dwTextColor;
+	DWORD dwBkColor;
+	TDrawInfo diBk;
+	bool bAlternateBk;
+	DWORD dwSelectedTextColor;
+	DWORD dwSelectedBkColor;
+	TDrawInfo diSelected;
+	DWORD dwHotTextColor;
+	DWORD dwHotBkColor;
+	TDrawInfo diHot;
+	DWORD dwDisabledTextColor;
+	DWORD dwDisabledBkColor;
+	TDrawInfo diDisabled;
+	int iHLineSize;
+	DWORD dwHLineColor;
+	int iVLineSize;
+	DWORD dwVLineColor;
+	bool bShowHtml;
+	bool bMultiExpandable;
 } TListInfoUI;
 
 class IListCallbackUI
 {
 public:
-    virtual LPCWSTR GetItemText(CControlUI* pList, int iItem, int iSubItem) = 0;
+	virtual LPCWSTR GetItemText(CControlUI* pList, int iItem, int iSubItem) = 0;
 };
 
 class IListOwnerUI
 {
 public:
-    virtual TListInfoUI* GetListInfo() = 0;
-    virtual int GetCurSel() const = 0;
-    virtual bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTriggerEvent=true) = 0;
-    virtual void DoEvent(TEventUI& event) = 0;
-    virtual bool ExpandItem(int iIndex, bool bExpand = true) = 0;
-    virtual int GetExpandedItem() const = 0;
+	virtual TListInfoUI* GetListInfo() = 0;
+	virtual int GetCurSel() const = 0;
+	virtual bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTriggerEvent=true) = 0;
+	virtual void DoEvent(TEventUI& event) = 0;
+	virtual bool ExpandItem(int iIndex, bool bExpand = true) = 0;
+	virtual int GetExpandedItem() const = 0;
 };
 
 class IListUI : public IListOwnerUI
 {
 public:
-    virtual CListHeaderUI* GetHeader() const = 0;
-    virtual CContainerUI* GetList() const = 0;
-    virtual IListCallbackUI* GetTextCallback() const = 0;
-    virtual void SetTextCallback(IListCallbackUI* pCallback) = 0;
+	virtual CListHeaderUI* GetHeader() const = 0;
+	virtual CContainerUI* GetList() const = 0;
+	virtual IListCallbackUI* GetTextCallback() const = 0;
+	virtual void SetTextCallback(IListCallbackUI* pCallback) = 0;
 };
 
 class IListItemUI
 {
 public:
-    virtual int GetIndex() const = 0;
-    virtual void SetIndex(int iIndex) = 0;
-    virtual int GetDrawIndex() const = 0;
-    virtual void SetDrawIndex(int iIndex) = 0;
-    virtual IListOwnerUI* GetOwner() = 0;
-    virtual void SetOwner(CControlUI* pOwner) = 0;
-    virtual bool IsSelected() const = 0;
-    virtual bool Select(bool bSelect = true, bool bTriggerEvent=true) = 0;
-    virtual bool IsExpanded() const = 0;
-    virtual bool Expand(bool bExpand = true) = 0;
-    virtual void DrawItemText(HDC hDC, const RECT& rcItem) = 0;
+	virtual int GetIndex() const = 0;
+	virtual void SetIndex(int iIndex) = 0;
+	virtual int GetDrawIndex() const = 0;
+	virtual void SetDrawIndex(int iIndex) = 0;
+	virtual IListOwnerUI* GetOwner() = 0;
+	virtual void SetOwner(CControlUI* pOwner) = 0;
+	virtual bool IsSelected() const = 0;
+	virtual bool Select(bool bSelect = true, bool bTriggerEvent=true) = 0;
+	virtual bool IsExpanded() const = 0;
+	virtual bool Expand(bool bExpand = true) = 0;
+	virtual void DrawItemText(HDC hDC, const RECT& rcItem) = 0;
 };
 
 class CListBodyUI;
@@ -90,366 +90,366 @@ class CListHeaderUI;
 class ZUILIB_API CListUI : public CVerticalLayoutUI, public IListUI
 {
 public:
-    CListUI();
+	CListUI();
 
-    LPCWSTR GetClass() const;
-    UINT GetControlFlags() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	UINT GetControlFlags() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    bool GetScrollSelect();
-    void SetScrollSelect(bool bScrollSelect);
-    int GetCurSel() const;
-    bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTriggerEvent=true);
+	bool GetScrollSelect();
+	void SetScrollSelect(bool bScrollSelect);
+	int GetCurSel() const;
+	bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTriggerEvent=true);
 
-    CControlUI* GetItemAt(int iIndex) const;
-    int GetItemIndex(CControlUI* pControl) const;
-    bool SetItemIndex(CControlUI* pControl, int iIndex);
-    bool SetMultiItemIndex(CControlUI* pStartControl, int iCount, int iNewStartIndex);
-    int GetCount() const;
-    bool Add(CControlUI* pControl);
-    bool AddAt(CControlUI* pControl, int iIndex);
-    bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-    bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
-    void RemoveAll();
+	CControlUI* GetItemAt(int iIndex) const;
+	int GetItemIndex(CControlUI* pControl) const;
+	bool SetItemIndex(CControlUI* pControl, int iIndex);
+	bool SetMultiItemIndex(CControlUI* pStartControl, int iCount, int iNewStartIndex);
+	int GetCount() const;
+	bool Add(CControlUI* pControl);
+	bool AddAt(CControlUI* pControl, int iIndex);
+	bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+	bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
+	void RemoveAll();
 
-    void EnsureVisible(int iIndex);
-    void Scroll(int dx, int dy);
+	void EnsureVisible(int iIndex);
+	void Scroll(int dx, int dy);
 
-    int GetChildPadding() const;
-    void SetChildPadding(int iPadding);
+	int GetChildPadding() const;
+	void SetChildPadding(int iPadding);
 
-    CListHeaderUI* GetHeader() const;  
-    CContainerUI* GetList() const;
-    TListInfoUI* GetListInfo();
+	CListHeaderUI* GetHeader() const;  
+	CContainerUI* GetList() const;
+	TListInfoUI* GetListInfo();
 
-    UINT GetItemFixedHeight();
-    void SetItemFixedHeight(UINT nHeight);
-    int GetItemFont(int index);
-    void SetItemFont(int index);
-    UINT GetItemTextStyle();
-    void SetItemTextStyle(UINT uStyle);
-    RECT GetItemTextPadding() const;
-    void SetItemTextPadding(RECT rc);
-    DWORD GetItemTextColor() const;
-    void SetItemTextColor(DWORD dwTextColor);
-    DWORD GetItemBkColor() const;
-    void SetItemBkColor(DWORD dwBkColor);
-    LPCWSTR GetItemBkImage() const;
-    void SetItemBkImage(LPCWSTR pStrImage);
-    bool IsAlternateBk() const;
-    void SetAlternateBk(bool bAlternateBk);
-    DWORD GetSelectedItemTextColor() const;
-    void SetSelectedItemTextColor(DWORD dwTextColor);
-    DWORD GetSelectedItemBkColor() const;
-    void SetSelectedItemBkColor(DWORD dwBkColor);
-    LPCWSTR GetSelectedItemImage() const;
-    void SetSelectedItemImage(LPCWSTR pStrImage);
-    DWORD GetHotItemTextColor() const;
-    void SetHotItemTextColor(DWORD dwTextColor);
-    DWORD GetHotItemBkColor() const;
-    void SetHotItemBkColor(DWORD dwBkColor);
-    LPCWSTR GetHotItemImage() const;
-    void SetHotItemImage(LPCWSTR pStrImage);
-    DWORD GetDisabledItemTextColor() const;
-    void SetDisabledItemTextColor(DWORD dwTextColor);
-    DWORD GetDisabledItemBkColor() const;
-    void SetDisabledItemBkColor(DWORD dwBkColor);
-    LPCWSTR GetDisabledItemImage() const;
-    void SetDisabledItemImage(LPCWSTR pStrImage);
-    int GetItemHLineSize() const;
-    void SetItemHLineSize(int iSize);
-    DWORD GetItemHLineColor() const;
-    void SetItemHLineColor(DWORD dwLineColor);
-    int GetItemVLineSize() const;
-    void SetItemVLineSize(int iSize);
-    DWORD GetItemVLineColor() const;
-    void SetItemVLineColor(DWORD dwLineColor);
-    bool IsItemShowHtml();
-    void SetItemShowHtml(bool bShowHtml = true);
+	UINT GetItemFixedHeight();
+	void SetItemFixedHeight(UINT nHeight);
+	int GetItemFont(int index);
+	void SetItemFont(int index);
+	UINT GetItemTextStyle();
+	void SetItemTextStyle(UINT uStyle);
+	RECT GetItemTextPadding() const;
+	void SetItemTextPadding(RECT rc);
+	DWORD GetItemTextColor() const;
+	void SetItemTextColor(DWORD dwTextColor);
+	DWORD GetItemBkColor() const;
+	void SetItemBkColor(DWORD dwBkColor);
+	LPCWSTR GetItemBkImage() const;
+	void SetItemBkImage(LPCWSTR pStrImage);
+	bool IsAlternateBk() const;
+	void SetAlternateBk(bool bAlternateBk);
+	DWORD GetSelectedItemTextColor() const;
+	void SetSelectedItemTextColor(DWORD dwTextColor);
+	DWORD GetSelectedItemBkColor() const;
+	void SetSelectedItemBkColor(DWORD dwBkColor);
+	LPCWSTR GetSelectedItemImage() const;
+	void SetSelectedItemImage(LPCWSTR pStrImage);
+	DWORD GetHotItemTextColor() const;
+	void SetHotItemTextColor(DWORD dwTextColor);
+	DWORD GetHotItemBkColor() const;
+	void SetHotItemBkColor(DWORD dwBkColor);
+	LPCWSTR GetHotItemImage() const;
+	void SetHotItemImage(LPCWSTR pStrImage);
+	DWORD GetDisabledItemTextColor() const;
+	void SetDisabledItemTextColor(DWORD dwTextColor);
+	DWORD GetDisabledItemBkColor() const;
+	void SetDisabledItemBkColor(DWORD dwBkColor);
+	LPCWSTR GetDisabledItemImage() const;
+	void SetDisabledItemImage(LPCWSTR pStrImage);
+	int GetItemHLineSize() const;
+	void SetItemHLineSize(int iSize);
+	DWORD GetItemHLineColor() const;
+	void SetItemHLineColor(DWORD dwLineColor);
+	int GetItemVLineSize() const;
+	void SetItemVLineSize(int iSize);
+	DWORD GetItemVLineColor() const;
+	void SetItemVLineColor(DWORD dwLineColor);
+	bool IsItemShowHtml();
+	void SetItemShowHtml(bool bShowHtml = true);
 
-    void SetMultiExpanding(bool bMultiExpandable); 
-    int GetExpandedItem() const;
-    bool ExpandItem(int iIndex, bool bExpand = true);
+	void SetMultiExpanding(bool bMultiExpandable); 
+	int GetExpandedItem() const;
+	bool ExpandItem(int iIndex, bool bExpand = true);
 
 	void SetPos(RECT rc, bool bNeedInvalidate = true);
 	void Move(SIZE szOffset, bool bNeedInvalidate = true);
-    void DoEvent(TEventUI& event);
-    void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+	void DoEvent(TEventUI& event);
+	void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
 
-    IListCallbackUI* GetTextCallback() const;
-    void SetTextCallback(IListCallbackUI* pCallback);
+	IListCallbackUI* GetTextCallback() const;
+	void SetTextCallback(IListCallbackUI* pCallback);
 
-    SIZE GetScrollPos() const;
-    SIZE GetScrollRange() const;
-    void SetScrollPos(SIZE szPos);
-    void LineUp();
-    void LineDown();
-    void PageUp();
-    void PageDown();
-    void HomeUp();
-    void EndDown();
-    void LineLeft();
-    void LineRight();
-    void PageLeft();
-    void PageRight();
-    void HomeLeft();
-    void EndRight();
-    void EnableScrollBar(bool bEnableVertical = true, bool bEnableHorizontal = false);
-    virtual CScrollBarUI* GetVerticalScrollBar() const;
-    virtual CScrollBarUI* GetHorizontalScrollBar() const;
-    bool SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData);
+	SIZE GetScrollPos() const;
+	SIZE GetScrollRange() const;
+	void SetScrollPos(SIZE szPos);
+	void LineUp();
+	void LineDown();
+	void PageUp();
+	void PageDown();
+	void HomeUp();
+	void EndDown();
+	void LineLeft();
+	void LineRight();
+	void PageLeft();
+	void PageRight();
+	void HomeLeft();
+	void EndRight();
+	void EnableScrollBar(bool bEnableVertical = true, bool bEnableHorizontal = false);
+	virtual CScrollBarUI* GetVerticalScrollBar() const;
+	virtual CScrollBarUI* GetHorizontalScrollBar() const;
+	bool SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData);
 
 protected:
-    bool m_bScrollSelect;
-    int m_iCurSel;
-    int m_iExpandedItem;
-    IListCallbackUI* m_pCallback;
-    CListBodyUI* m_pList;
-    CListHeaderUI* m_pHeader;
-    TListInfoUI m_ListInfo;
+	bool m_bScrollSelect;
+	int m_iCurSel;
+	int m_iExpandedItem;
+	IListCallbackUI* m_pCallback;
+	CListBodyUI* m_pList;
+	CListHeaderUI* m_pHeader;
+	TListInfoUI m_ListInfo;
 };
 
 class ZUILIB_API CListHeaderUI : public CHorizontalLayoutUI
 {
 public:
-    CListHeaderUI();
+	CListHeaderUI();
 
-    LPCWSTR GetClass() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    SIZE EstimateSize(SIZE szAvailable);
+	SIZE EstimateSize(SIZE szAvailable);
 };
 
 
 class ZUILIB_API CListHeaderItemUI : public CControlUI
 {
 public:
-    CListHeaderItemUI();
+	CListHeaderItemUI();
 
-    LPCWSTR GetClass() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
-    UINT GetControlFlags() const;
+	LPCWSTR GetClass() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
+	UINT GetControlFlags() const;
 
-    void SetEnabled(bool bEnable = true);
+	void SetEnabled(bool bEnable = true);
 
 	bool IsDragable() const;
-    void SetDragable(bool bDragable);
+	void SetDragable(bool bDragable);
 	DWORD GetSepWidth() const;
-    void SetSepWidth(int iWidth);
+	void SetSepWidth(int iWidth);
 	DWORD GetTextStyle() const;
-    void SetTextStyle(UINT uStyle);
+	void SetTextStyle(UINT uStyle);
 	DWORD GetTextColor() const;
-    void SetTextColor(DWORD dwTextColor);
-    DWORD GetSepColor() const;
-    void SetSepColor(DWORD dwSepColor);
+	void SetTextColor(DWORD dwTextColor);
+	DWORD GetSepColor() const;
+	void SetSepColor(DWORD dwSepColor);
 	void SetTextPadding(RECT rc);
 	RECT GetTextPadding() const;
-    void SetFont(int index);
-    bool IsShowHtml();
-    void SetShowHtml(bool bShowHtml = true);
-    LPCWSTR GetNormalImage() const;
-    void SetNormalImage(LPCWSTR pStrImage);
-    LPCWSTR GetHotImage() const;
-    void SetHotImage(LPCWSTR pStrImage);
-    LPCWSTR GetPushedImage() const;
-    void SetPushedImage(LPCWSTR pStrImage);
-    LPCWSTR GetFocusedImage() const;
-    void SetFocusedImage(LPCWSTR pStrImage);
-    LPCWSTR GetSepImage() const;
-    void SetSepImage(LPCWSTR pStrImage);
+	void SetFont(int index);
+	bool IsShowHtml();
+	void SetShowHtml(bool bShowHtml = true);
+	LPCWSTR GetNormalImage() const;
+	void SetNormalImage(LPCWSTR pStrImage);
+	LPCWSTR GetHotImage() const;
+	void SetHotImage(LPCWSTR pStrImage);
+	LPCWSTR GetPushedImage() const;
+	void SetPushedImage(LPCWSTR pStrImage);
+	LPCWSTR GetFocusedImage() const;
+	void SetFocusedImage(LPCWSTR pStrImage);
+	LPCWSTR GetSepImage() const;
+	void SetSepImage(LPCWSTR pStrImage);
 
-    void DoEvent(TEventUI& event);
-    SIZE EstimateSize(SIZE szAvailable);
-    void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
-    RECT GetThumbRect() const;
+	void DoEvent(TEventUI& event);
+	SIZE EstimateSize(SIZE szAvailable);
+	void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+	RECT GetThumbRect() const;
 
-    void PaintText(HDC hDC);
-    void PaintStatusImage(HDC hDC);
+	void PaintText(HDC hDC);
+	void PaintStatusImage(HDC hDC);
 
 protected:
-    POINT ptLastMouse;
-    bool m_bDragable;
-    UINT m_uButtonState;
-    int m_iSepWidth;
-    DWORD m_dwTextColor;
-    DWORD m_dwSepColor;
-    int m_iFont;
-    UINT m_uTextStyle;
-    bool m_bShowHtml;
-	RECT m_rcTextPadding;
-    TDrawInfo m_diNormal;
-    TDrawInfo m_diHot;
-    TDrawInfo m_diPushed;
-    TDrawInfo m_diFocused;
-    TDrawInfo m_diSep;
+	POINT ptLastMouse;
+	bool m_bDragable;
+	UINT m_uButtonState;
+	int m_iSepWidth;
+	DWORD m_dwTextColor;
+	DWORD m_dwSepColor;
+	int m_iFont;
+	UINT m_uTextStyle;
+	bool m_bShowHtml;
+	RECT m_rcTextPadding = { 0 };
+	TDrawInfo m_diNormal;
+	TDrawInfo m_diHot;
+	TDrawInfo m_diPushed;
+	TDrawInfo m_diFocused;
+	TDrawInfo m_diSep;
 };
 
 class ZUILIB_API CListElementUI : public CControlUI, public IListItemUI
 {
 public:
-    CListElementUI();
+	CListElementUI();
 
-    LPCWSTR GetClass() const;
-    UINT GetControlFlags() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	UINT GetControlFlags() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    void SetEnabled(bool bEnable = true);
+	void SetEnabled(bool bEnable = true);
 
-    int GetIndex() const;
-    void SetIndex(int iIndex);
-    int GetDrawIndex() const;
-    void SetDrawIndex(int iIndex);
+	int GetIndex() const;
+	void SetIndex(int iIndex);
+	int GetDrawIndex() const;
+	void SetDrawIndex(int iIndex);
 
-    IListOwnerUI* GetOwner();
-    void SetOwner(CControlUI* pOwner);
-    void SetVisible(bool bVisible = true);
+	IListOwnerUI* GetOwner();
+	void SetOwner(CControlUI* pOwner);
+	void SetVisible(bool bVisible = true);
 
-    bool IsSelected() const;
-    bool Select(bool bSelect = true, bool bTriggerEvent=true);
-    bool IsExpanded() const;
-    bool Expand(bool bExpand = true);
+	bool IsSelected() const;
+	bool Select(bool bSelect = true, bool bTriggerEvent=true);
+	bool IsExpanded() const;
+	bool Expand(bool bExpand = true);
 
-    void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
-    bool Activate();
+	void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
+	bool Activate();
 
-    void DoEvent(TEventUI& event);
-    void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+	void DoEvent(TEventUI& event);
+	void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
 
-    void DrawItemBk(HDC hDC, const RECT& rcItem);
+	void DrawItemBk(HDC hDC, const RECT& rcItem);
 
 protected:
-    int m_iIndex;
-    int m_iDrawIndex;
-    bool m_bSelected;
-    UINT m_uButtonState;
-    IListOwnerUI* m_pOwner;
+	int m_iIndex;
+	int m_iDrawIndex;
+	bool m_bSelected;
+	UINT m_uButtonState;
+	IListOwnerUI* m_pOwner;
 };
 
 class ZUILIB_API CListLabelElementUI : public CListElementUI
 {
 public:
-    CListLabelElementUI();
+	CListLabelElementUI();
 
-    LPCWSTR GetClass() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    void SetOwner(CControlUI* pOwner);
+	void SetOwner(CControlUI* pOwner);
 
-    void SetFixedWidth(int cx);
-    void SetFixedHeight(int cy);
-    void SetText(LPCWSTR pstrText);
+	void SetFixedWidth(int cx);
+	void SetFixedHeight(int cy);
+	void SetText(LPCWSTR pstrText);
 
-    void DoEvent(TEventUI& event);
-    SIZE EstimateSize(SIZE szAvailable);
-    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	void DoEvent(TEventUI& event);
+	SIZE EstimateSize(SIZE szAvailable);
+	bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 
-    void DrawItemText(HDC hDC, const RECT& rcItem);
+	void DrawItemText(HDC hDC, const RECT& rcItem);
 
 protected:
-    SIZE    m_cxyFixedLast;
-    bool    m_bNeedEstimateSize;
+	SIZE    m_cxyFixedLast;
+	bool    m_bNeedEstimateSize;
 
-    SIZE    m_szAvailableLast;
-    UINT    m_uFixedHeightLast; 
-    int     m_nFontLast;
-    UINT    m_uTextStyleLast;
-    RECT    m_rcTextPaddingLast;
+	SIZE    m_szAvailableLast;
+	UINT    m_uFixedHeightLast; 
+	int     m_nFontLast;
+	UINT    m_uTextStyleLast;
+	RECT    m_rcTextPaddingLast;
 };
 
 class ZUILIB_API CListTextElementUI : public CListLabelElementUI
 {
 public:
-    CListTextElementUI();
-    ~CListTextElementUI();
+	CListTextElementUI();
+	~CListTextElementUI();
 
-    LPCWSTR GetClass() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
-    UINT GetControlFlags() const;
+	LPCWSTR GetClass() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
+	UINT GetControlFlags() const;
 
-    LPCWSTR GetText(int iIndex) const;
-    void SetText(int iIndex, LPCWSTR pstrText);
+	LPCWSTR GetText(int iIndex) const;
+	void SetText(int iIndex, LPCWSTR pstrText);
 
-    void SetOwner(CControlUI* pOwner);
-    CDuiString* GetLinkContent(int iIndex);
+	void SetOwner(CControlUI* pOwner);
+	CDuiString* GetLinkContent(int iIndex);
 
-    void DoEvent(TEventUI& event);
-    SIZE EstimateSize(SIZE szAvailable);
+	void DoEvent(TEventUI& event);
+	SIZE EstimateSize(SIZE szAvailable);
 
-    void DrawItemText(HDC hDC, const RECT& rcItem);
+	void DrawItemText(HDC hDC, const RECT& rcItem);
 
 protected:
-    enum { MAX_LINK = 8 };
-    int m_nLinks;
-    RECT m_rcLinks[MAX_LINK];
-    CDuiString m_sLinks[MAX_LINK];
-    int m_nHoverLink;
-    IListUI* m_pOwner;
-    CDuiPtrArray m_aTexts;
+	enum { MAX_LINK = 8 };
+	int m_nLinks;
+	RECT m_rcLinks[MAX_LINK];
+	CDuiString m_sLinks[MAX_LINK];
+	int m_nHoverLink;
+	IListUI* m_pOwner;
+	CDuiPtrArray m_aTexts;
 
-    CDuiString m_sTextLast;
+	CDuiString m_sTextLast;
 };
 
 
 class ZUILIB_API CListContainerElementUI : public CContainerUI, public IListItemUI
 {
 public:
-    CListContainerElementUI();
+	CListContainerElementUI();
 
-    LPCWSTR GetClass() const;
-    UINT GetControlFlags() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	UINT GetControlFlags() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    int GetIndex() const;
-    void SetIndex(int iIndex);
-    int GetDrawIndex() const;
-    void SetDrawIndex(int iIndex);
+	int GetIndex() const;
+	void SetIndex(int iIndex);
+	int GetDrawIndex() const;
+	void SetDrawIndex(int iIndex);
 
-    IListOwnerUI* GetOwner();
-    void SetOwner(CControlUI* pOwner);
-    void SetVisible(bool bVisible = true);
-    void SetEnabled(bool bEnable = true);
+	IListOwnerUI* GetOwner();
+	void SetOwner(CControlUI* pOwner);
+	void SetVisible(bool bVisible = true);
+	void SetEnabled(bool bEnable = true);
 
-    bool IsSelected() const;
-    bool Select(bool bSelect = true, bool bTriggerEvent=true);
-    bool IsExpandable() const;
-    void SetExpandable(bool bExpandable);
-    bool IsExpanded() const;
-    bool Expand(bool bExpand = true);
+	bool IsSelected() const;
+	bool Select(bool bSelect = true, bool bTriggerEvent=true);
+	bool IsExpandable() const;
+	void SetExpandable(bool bExpandable);
+	bool IsExpanded() const;
+	bool Expand(bool bExpand = true);
 
-    void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
-    bool Activate();
+	void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
+	bool Activate();
 
-    void DoEvent(TEventUI& event);
-    void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
-    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	void DoEvent(TEventUI& event);
+	void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+	bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 
-    void DrawItemText(HDC hDC, const RECT& rcItem);    
-    void DrawItemBk(HDC hDC, const RECT& rcItem);
+	void DrawItemText(HDC hDC, const RECT& rcItem);    
+	void DrawItemBk(HDC hDC, const RECT& rcItem);
 
-    SIZE EstimateSize(SIZE szAvailable);
+	SIZE EstimateSize(SIZE szAvailable);
 
 protected:
-    int m_iIndex;
-    int m_iDrawIndex;
-    bool m_bSelected;
-    bool m_bExpandable;
-    bool m_bExpand;
-    UINT m_uButtonState;
-    IListOwnerUI* m_pOwner;
+	int m_iIndex;
+	int m_iDrawIndex;
+	bool m_bSelected;
+	bool m_bExpandable;
+	bool m_bExpand;
+	UINT m_uButtonState;
+	IListOwnerUI* m_pOwner;
 };
 
 class ZUILIB_API CListHBoxElementUI : public CListContainerElementUI
 {
 public:
-    CListHBoxElementUI();
+	CListHBoxElementUI();
 
-    LPCWSTR GetClass() const;
-    LPVOID GetInterface(LPCWSTR pstrName);
+	LPCWSTR GetClass() const;
+	LPVOID GetInterface(LPCWSTR pstrName);
 
-    void SetPos(RECT rc, bool bNeedInvalidate = true);
-    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	void SetPos(RECT rc, bool bNeedInvalidate = true);
+	bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 };
 
-} // namespace Zuilib
+} // namespace zuilib
 
 #endif // __UILIST_H__

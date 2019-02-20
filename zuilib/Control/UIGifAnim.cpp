@@ -36,7 +36,7 @@ extern ZRESULT FindZipItemW(HZIP hz, const WCHAR *name, bool ic, int *index, ZIP
 extern ZRESULT UnzipItem(HZIP hz, int index, void *dst, unsigned int len, DWORD flags);
 ///////////////////////////////////////////////////////////////////////////////////////
 
-namespace Zuilib
+namespace zuilib
 {
 
 	CGifAnimUI::CGifAnimUI(void)
@@ -82,7 +82,7 @@ namespace Zuilib
 			InitGifImage();
 		}
 		DrawFrame( hDC );
-        return true;
+		return true;
 	}
 
 	void CGifAnimUI::DoEvent( TEventUI& event )

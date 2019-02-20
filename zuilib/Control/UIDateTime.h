@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class CDateTimeWnd;
 
@@ -26,8 +26,8 @@ namespace Zuilib
 
 		void UpdateText();
 
-        void SetPos(RECT rc, bool bNeedInvalidate = true);
-        void Move(SIZE szOffset, bool bNeedInvalidate = true);
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		void Move(SIZE szOffset, bool bNeedInvalidate = true);
 
 		void DoEvent(TEventUI& event);
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UIEdit.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	class CEditWnd : public CWindowWnd
 	{
@@ -40,10 +40,10 @@ namespace Zuilib
 		m_pOwner = pOwner;
 		RECT rcPos = CalPos();
 		UINT uStyle = WS_CHILD | ES_AUTOHSCROLL | pOwner->GetWindowStyls();
-        UINT uTextStyle = m_pOwner->GetTextStyle();
-        if(uTextStyle & DT_LEFT) uStyle |= ES_LEFT;
-        else if(uTextStyle & DT_CENTER) uStyle |= ES_CENTER;
-        else if(uTextStyle & DT_RIGHT) uStyle |= ES_RIGHT;
+		UINT uTextStyle = m_pOwner->GetTextStyle();
+		if(uTextStyle & DT_LEFT) uStyle |= ES_LEFT;
+		else if(uTextStyle & DT_CENTER) uStyle |= ES_CENTER;
+		else if(uTextStyle & DT_RIGHT) uStyle |= ES_RIGHT;
 		if( m_pOwner->IsPasswordMode() ) uStyle |= ES_PASSWORD;
 		Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
 
@@ -228,7 +228,7 @@ namespace Zuilib
 		if( m_pOwner == NULL ) return 0;
 		// Copy text back
 		int cchLen = ::GetWindowTextLength(m_hWnd) + 1;
-		LPTSTR pstr = static_cast<LPTSTR>(_alloca(cchLen * sizeof(WCHAR)));
+		LPTSTR pstr = static_cast<LPTSTR>(_malloca(cchLen * sizeof(WCHAR)));
 		ASSERT(pstr);
 		if( pstr == NULL ) return 0;
 		::GetWindowText(m_hWnd, pstr, cchLen);
@@ -338,33 +338,33 @@ namespace Zuilib
 		{
 			return;
 		}
-        if( event.Type == UIEVENT_MOUSEENTER )
-        {
-            if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
-                if( IsEnabled() ) {
-                    if( (m_uButtonState & UISTATE_HOT) == 0  ) {
-                        m_uButtonState |= UISTATE_HOT;
-                        Invalidate();
-                    }
-                }
-            }
-        }
-        if( event.Type == UIEVENT_MOUSELEAVE )
-        {
-            if( !::PtInRect(&m_rcItem, event.ptMouse ) ) {
-                if( IsEnabled() ) {
-                    if( (m_uButtonState & UISTATE_HOT) != 0  ) {
-                        m_uButtonState &= ~UISTATE_HOT;
-                        Invalidate();
-                    }
-                }
-                if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
-            }
-            else {
-                if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
-                return;
-            }
-        }
+		if( event.Type == UIEVENT_MOUSEENTER )
+		{
+			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
+				if( IsEnabled() ) {
+					if( (m_uButtonState & UISTATE_HOT) == 0  ) {
+						m_uButtonState |= UISTATE_HOT;
+						Invalidate();
+					}
+				}
+			}
+		}
+		if( event.Type == UIEVENT_MOUSELEAVE )
+		{
+			if( !::PtInRect(&m_rcItem, event.ptMouse ) ) {
+				if( IsEnabled() ) {
+					if( (m_uButtonState & UISTATE_HOT) != 0  ) {
+						m_uButtonState &= ~UISTATE_HOT;
+						Invalidate();
+					}
+				}
+				if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
+			}
+			else {
+				if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
+				return;
+			}
+		}
 		CLabelUI::DoEvent(event);
 	}
 
@@ -553,11 +553,11 @@ namespace Zuilib
 		CControlUI::SetPos(rc, bNeedInvalidate);
 		if( m_pWindow != NULL ) {
 			RECT rcPos = m_pWindow->CalPos();
-            if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
-            else {
-                ::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
+			else {
+				::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
 				rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
-            }
+			}
 		}
 	}
 
@@ -565,12 +565,12 @@ namespace Zuilib
 	{
 		CControlUI::Move(szOffset, bNeedInvalidate);
 		if( m_pWindow != NULL ) {
-            RECT rcPos = m_pWindow->CalPos();
-            if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
-            else {
-                ::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
-                    rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
-            }      
+			RECT rcPos = m_pWindow->CalPos();
+			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
+			else {
+				::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+					rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
+			}      
 		}
 	}
 

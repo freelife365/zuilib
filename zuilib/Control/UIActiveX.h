@@ -5,8 +5,7 @@
 
 struct IOleObject;
 
-
-namespace Zuilib {
+namespace zuilib {
 
 class CActiveXCtrl;
 
@@ -14,68 +13,73 @@ template< class T >
 class CSafeRelease
 {
 public:
-    CSafeRelease(T* p) 
+	CSafeRelease(T* p) 
 		: m_p(p) 
 	{ 
 
 	};
-    ~CSafeRelease() 
+	~CSafeRelease() 
 	{ 
-		if( m_p != NULL ) m_p->Release(); 
+		if (m_p) {
+			m_p->Release();
+		}
+			
 	};
-    T* Detach() 
+	T* Detach() 
 	{ 
-		T* t = m_p; m_p = NULL; return t; 
+		T* t = m_p; 
+		m_p = nullptr; 
+		return t; 
 	};
-    T* m_p;
+	T* m_p;
 };
 
 class ZUILIB_API CActiveXUI : public CControlUI, public IMessageFilterUI
 {
-    friend class CActiveXCtrl;
+	friend class CActiveXCtrl;
 public:
-    CActiveXUI();
-    virtual ~CActiveXUI();
+	CActiveXUI();
+	virtual ~CActiveXUI();
 
-    LPCWSTR GetClass() const;
+	LPCWSTR GetClass() const;
 	LPVOID GetInterface(LPCWSTR pstrName);
 	UINT GetControlFlags() const;
 	HWND GetNativeWindow() const;
 
-    bool IsDelayCreate() const;
-    void SetDelayCreate(bool bDelayCreate = true);
+	bool IsDelayCreate() const;
+	void SetDelayCreate(bool bDelayCreate = true);
 
-    bool CreateControl(const CLSID clsid);
-    bool CreateControl(LPCWSTR pstrCLSID);
-    HRESULT GetControl(const IID iid, LPVOID* ppRet);
+	bool CreateControl(const CLSID clsid);
+	bool CreateControl(LPCWSTR pstrCLSID);
+	HRESULT GetControl(const IID iid, LPVOID* ppRet);
 	CLSID GetClisd() const;
-    CDuiString GetModuleName() const;
-    void SetModuleName(LPCWSTR pstrText);
+	CDuiString GetModuleName() const;
+	void SetModuleName(LPCWSTR pstrText);
 
-    void SetVisible(bool bVisible = true);
-    void SetInternVisible(bool bVisible = true);
+	void SetVisible(bool bVisible = true);
+	void SetInternVisible(bool bVisible = true);
 	void SetPos(RECT rc, bool bNeedInvalidate = true);
 	void Move(SIZE szOffset, bool bNeedInvalidate = true);
-    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 
-    void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+	void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
 
-    LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled);
-
-protected:
-    virtual void ReleaseControl();
-    virtual bool DoCreateControl();
+	LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled);
 
 protected:
-    CLSID m_clsid;
-    CDuiString m_sModuleName;
-    bool m_bCreated;
-    bool m_bDelayCreate;
-    IOleObject* m_pUnk;
-    CActiveXCtrl* m_pControl;
-    HWND m_hwndHost;
+	virtual void ReleaseControl();
+	virtual bool DoCreateControl();
+
+protected:
+	CLSID m_clsid;
+	CDuiString m_sModuleName;
+	IOleObject* m_pUnk;
+	CActiveXCtrl* m_pControl;
+	HWND m_hwndHost;
+	bool m_bCreated;
+	bool m_bDelayCreate;
 };
 
-} // namespace Zuilib
+} // namespace zuilib
 
 #endif // __UIACTIVEX_H__

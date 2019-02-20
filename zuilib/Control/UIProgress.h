@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CProgressUI : public CLabelUI
 	{
@@ -36,6 +36,6 @@ namespace Zuilib
 		TDrawInfo m_diFore;
 	};
 
-} // namespace Zuilib
+} // namespace zuilib
 
 #endif // __UIPROGRESS_H__

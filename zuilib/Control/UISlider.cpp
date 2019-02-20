@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UISlider.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	CSliderUI::CSliderUI() : m_uButtonState(0), m_nStep(1), m_bImmMode(false)
 	{
@@ -184,7 +184,7 @@ namespace Zuilib
 			case SB_LINEDOWN:
 				SetValue(GetValue() - GetChangeStep());
 				m_pManager->SendNotify(this, DUI_MSGTYPE_VALUECHANGED);
-			    return;
+				return;
 			}
 		}
 		if( event.Type == UIEVENT_MOUSEMOVE )
@@ -213,33 +213,33 @@ namespace Zuilib
 				return;
 			}
 		}
-        if( event.Type == UIEVENT_MOUSEENTER )
-        {
-            if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
-                if( IsEnabled() ) {
-                    if( (m_uButtonState & UISTATE_HOT) == 0  ) {
-                        m_uButtonState |= UISTATE_HOT;
-                        Invalidate();
-                    }
-                }
-            }
-        }
-        if( event.Type == UIEVENT_MOUSELEAVE )
-        {
-            if( !::PtInRect(&m_rcItem, event.ptMouse ) ) {
-                if( IsEnabled() ) {
-                    if( (m_uButtonState & UISTATE_HOT) != 0  ) {
-                        m_uButtonState &= ~UISTATE_HOT;
-                        Invalidate();
-                    }
-                }
-                if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
-            }
-            else {
-                if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
-                return;
-            }
-        }
+		if( event.Type == UIEVENT_MOUSEENTER )
+		{
+			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
+				if( IsEnabled() ) {
+					if( (m_uButtonState & UISTATE_HOT) == 0  ) {
+						m_uButtonState |= UISTATE_HOT;
+						Invalidate();
+					}
+				}
+			}
+		}
+		if( event.Type == UIEVENT_MOUSELEAVE )
+		{
+			if( !::PtInRect(&m_rcItem, event.ptMouse ) ) {
+				if( IsEnabled() ) {
+					if( (m_uButtonState & UISTATE_HOT) != 0  ) {
+						m_uButtonState &= ~UISTATE_HOT;
+						Invalidate();
+					}
+				}
+				if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
+			}
+			else {
+				if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
+				return;
+			}
+		}
 		CControlUI::DoEvent(event);
 	}
 

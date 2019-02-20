@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UICheckBox.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	LPCWSTR CCheckBoxUI::GetClass() const
 	{

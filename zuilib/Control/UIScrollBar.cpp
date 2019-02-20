@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "UIScrollBar.h"
 
-namespace Zuilib {
+namespace zuilib {
 
 CScrollBarUI::CScrollBarUI() :
 	m_bHorizontal(false),
 	m_nRange(100),
 	m_nScrollPos(0),
 	m_nLineSize(SCROLLBAR_LINESIZE), 
-    m_nScrollUnit(1),
+	m_nScrollUnit(1),
 	m_pOwner(NULL),
 	m_nLastScrollPos(0),
 	m_nLastScrollOffset(0),
@@ -128,13 +128,13 @@ void CScrollBarUI::SetScrollPos(int nPos, bool bTriggerEvent)
 	int iOldScrollPos = m_nScrollPos;
 	m_nScrollPos = nPos;
 	if( m_nScrollPos < 0 ) m_nScrollPos = 0;
-    if( m_nScrollUnit > 1 ) {
-        int iLeftOffset = m_nScrollPos % m_nScrollUnit;
-        if( iLeftOffset != 0 ) {
-            if( iLeftOffset >= m_nScrollUnit/2 ) m_nScrollPos += m_nScrollUnit - iLeftOffset;
-            else m_nScrollPos -= iLeftOffset;   
-        }
-    }
+	if( m_nScrollUnit > 1 ) {
+		int iLeftOffset = m_nScrollPos % m_nScrollUnit;
+		if( iLeftOffset != 0 ) {
+			if( iLeftOffset >= m_nScrollUnit/2 ) m_nScrollPos += m_nScrollUnit - iLeftOffset;
+			else m_nScrollPos -= iLeftOffset;   
+		}
+	}
 	if( m_nScrollPos > m_nRange ) m_nScrollPos = m_nRange;
 
 	SetPos(m_rcItem, true);
@@ -145,23 +145,23 @@ void CScrollBarUI::SetScrollPos(int nPos, bool bTriggerEvent)
 
 int CScrollBarUI::GetLineSize() const
 {
-    if (m_nScrollUnit > 1) return m_nScrollUnit;
+	if (m_nScrollUnit > 1) return m_nScrollUnit;
 	return m_nLineSize;
 }
 
 void CScrollBarUI::SetLineSize(int nSize)
 {
-    if (nSize >= 0) m_nLineSize = nSize;
+	if (nSize >= 0) m_nLineSize = nSize;
 }
 
 int CScrollBarUI::GetScrollUnit() const
 {
-    return m_nScrollUnit;
+	return m_nScrollUnit;
 }
 
 void CScrollBarUI::SetScrollUnit(int iUnit)
 {
-    if (iUnit >= 0) m_nScrollUnit = iUnit;
+	if (iUnit >= 0) m_nScrollUnit = iUnit;
 }
 
 bool CScrollBarUI::GetShowButton1()
@@ -846,30 +846,30 @@ void CScrollBarUI::DoEvent(TEventUI& event)
 	}
 	if( event.Type == UIEVENT_MOUSEENTER )
 	{
-        if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
-            if( IsEnabled() ) {
-                m_uButton1State |= UISTATE_HOT;
-                m_uButton2State |= UISTATE_HOT;
-                if( ::PtInRect(&m_rcThumb, event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
-                Invalidate();
-            }
-        }
+		if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
+			if( IsEnabled() ) {
+				m_uButton1State |= UISTATE_HOT;
+				m_uButton2State |= UISTATE_HOT;
+				if( ::PtInRect(&m_rcThumb, event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
+				Invalidate();
+			}
+		}
 	}
 	if( event.Type == UIEVENT_MOUSELEAVE )
 	{
-        if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
-            if( IsEnabled() ) {
-                m_uButton1State &= ~UISTATE_HOT;
-                m_uButton2State &= ~UISTATE_HOT;
-                m_uThumbState &= ~UISTATE_HOT;
-                Invalidate();
-            }
-            if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
-        }
-        else {
-            if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
-            return;
-        }
+		if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
+			if( IsEnabled() ) {
+				m_uButton1State &= ~UISTATE_HOT;
+				m_uButton2State &= ~UISTATE_HOT;
+				m_uThumbState &= ~UISTATE_HOT;
+				Invalidate();
+			}
+			if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
+		}
+		else {
+			if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
+			return;
+		}
 	}
 
 	if( m_pOwner != NULL ) m_pOwner->DoEvent(event); else CControlUI::DoEvent(event);
@@ -922,7 +922,7 @@ void CScrollBarUI::SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue)
 	else if( _tcscmp(pstrName, _T("linesize")) == 0 ) SetLineSize(_ttoi(pstrValue));
 	else if( _tcscmp(pstrName, _T("range")) == 0 ) SetScrollRange(_ttoi(pstrValue));
 	else if( _tcscmp(pstrName, _T("value")) == 0 ) SetScrollPos(_ttoi(pstrValue));
-    else if( _tcscmp(pstrName, _T("scrollunit")) == 0 ) SetScrollUnit(_ttoi(pstrValue));
+	else if( _tcscmp(pstrName, _T("scrollunit")) == 0 ) SetScrollUnit(_ttoi(pstrValue));
 	else if( _tcscmp(pstrName, _T("showbutton1")) == 0 ) SetShowButton1(_tcscmp(pstrValue, _T("true")) == 0);
 	else if( _tcscmp(pstrName, _T("showbutton2")) == 0 ) SetShowButton2(_tcscmp(pstrValue, _T("true")) == 0);
 	else CControlUI::SetAttribute(pstrName, pstrValue);
@@ -938,7 +938,7 @@ bool CScrollBarUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopContro
 	PaintThumb(hDC);
 	PaintRail(hDC);
 	PaintBorder(hDC);
-    return true;
+	return true;
 }
 
 void CScrollBarUI::PaintBk(HDC hDC)
@@ -1098,4 +1098,4 @@ void CScrollBarUI::PaintRail(HDC hDC)
 	if( DrawImage(hDC, m_diRailNormal) ) return;
 }
 
-} // namespace Zuilib
+} // namespace zuilib

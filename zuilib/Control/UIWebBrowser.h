@@ -6,7 +6,7 @@
 #include "Utils/WebBrowserEventHandler.h"
 #include <ExDisp.h>
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CWebBrowserUI
 		: public CActiveXUI
@@ -118,5 +118,5 @@ namespace Zuilib
 		// Duilib消息分发给WebBrowser
 		virtual LRESULT TranslateAccelerator( MSG *pMsg );
 	};
-} // namespace Zuilib
+} // namespace zuilib
 #endif // __UIWEBBROWSER_H__

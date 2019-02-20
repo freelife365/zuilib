@@ -6,7 +6,7 @@ using namespace std;
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class CTreeViewUI;
 	class CCheckBoxUI;
@@ -76,7 +76,7 @@ namespace Zuilib
 		COptionUI*				GetItemButton() const {return pItemButton;};
 
 	private:
-		long	m_iTreeLavel;
+		long	m_iTreeLavel = 0;
 		bool	m_bIsVisable;
 		bool	m_bIsCheckBox;
 		DWORD	m_dwItemTextColor;
@@ -105,14 +105,14 @@ namespace Zuilib
 	public:
 		virtual LPCWSTR GetClass() const;
 		virtual LPVOID	GetInterface(LPCWSTR pstrName);
-        virtual bool Add(CControlUI* pControl);
-        virtual bool AddAt(CControlUI* pControl, int iIndex);
-        virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-        virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
-        virtual void RemoveAll();
+		virtual bool Add(CControlUI* pControl);
+		virtual bool AddAt(CControlUI* pControl, int iIndex);
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
+		virtual void RemoveAll();
 
-        long AddAt(CTreeNodeUI* pControl, int iIndex);
-        bool AddAt(CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode);
+		long AddAt(CTreeNodeUI* pControl, int iIndex);
+		bool AddAt(CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode);
 
 		virtual bool OnCheckBoxChanged(void* param);
 		virtual bool OnFolderChanged(void* param);

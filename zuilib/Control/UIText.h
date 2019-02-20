@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CTextUI : public CLabelUI
 	{
@@ -29,6 +29,6 @@ namespace Zuilib
 		int m_nHoverLink;
 	};
 
-} // namespace Zuilib
+} // namespace zuilib
 
 #endif //__UITEXT_H__

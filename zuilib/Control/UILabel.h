@@ -17,7 +17,7 @@ using Gdiplus::RectF;
 using Gdiplus::GdiplusStartupInput;
 #endif
 
-namespace Zuilib
+namespace zuilib
 {
 	class ZUILIB_API CLabelUI : public CControlUI
 	{
@@ -28,8 +28,8 @@ namespace Zuilib
 		LPCWSTR GetClass() const;
 		LPVOID GetInterface(LPCWSTR pstrName);
 
-        void SetFixedWidth(int cx);
-        void SetFixedHeight(int cy);
+		void SetFixedWidth(int cx);
+		void SetFixedHeight(int cy);
 
 		void SetText(LPCWSTR pstrText);
 		void SetTextStyle(UINT uStyle);
@@ -95,9 +95,9 @@ namespace Zuilib
 		UINT	m_uTextStyle;
 		RECT	m_rcTextPadding;
 		bool	m_bShowHtml;
-        SIZE    m_szAvailableLast;
-        SIZE    m_cxyFixedLast;
-        bool    m_bNeedEstimateSize;
+		SIZE    m_szAvailableLast;
+		SIZE    m_cxyFixedLast;
+		bool    m_bNeedEstimateSize;
 
 		float		m_fLuminousFuzzy;
 		int			m_GradientLength;

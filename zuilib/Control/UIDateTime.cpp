@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UIDateTime.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	//CDateTimeUI::m_nDTUpdateFlag
 #define DT_NONE   0
@@ -240,31 +240,31 @@ namespace Zuilib
 		}
 	}
 
-    void CDateTimeUI::SetPos(RECT rc, bool bNeedInvalidate)
-    {
-        CControlUI::SetPos(rc, bNeedInvalidate);
-        if( m_pWindow != NULL ) {
-            RECT rcPos = m_pWindow->CalPos();
-            if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
-            else {
-                ::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
-                    rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
-            }
-        }
-    }
+	void CDateTimeUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		CControlUI::SetPos(rc, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
+			else {
+				::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+					rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
+			}
+		}
+	}
 
-    void CDateTimeUI::Move(SIZE szOffset, bool bNeedInvalidate)
-    {
-        CControlUI::Move(szOffset, bNeedInvalidate);
-        if( m_pWindow != NULL ) {
-            RECT rcPos = m_pWindow->CalPos();
-            if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
-            else {
-                ::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
-                    rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
-            }      
-        }
-    }
+	void CDateTimeUI::Move(SIZE szOffset, bool bNeedInvalidate)
+	{
+		CControlUI::Move(szOffset, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
+			else {
+				::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+					rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW); 
+			}      
+		}
+	}
 
 	void CDateTimeUI::DoEvent(TEventUI& event)
 	{

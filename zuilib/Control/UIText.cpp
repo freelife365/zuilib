@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UIText.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	CTextUI::CTextUI() : m_nLinks(0), m_nHoverLink(-1)
 	{
@@ -93,15 +93,15 @@ namespace Zuilib
 		if( event.Type == UIEVENT_MOUSELEAVE ) {
 			if( m_nLinks > 0 && IsEnabled() ) {
 				if(m_nHoverLink != -1) {
-                    if( !::PtInRect(&m_rcLinks[m_nHoverLink], event.ptMouse) ) {
-                        m_nHoverLink = -1;
-                        Invalidate();
-                        if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
-                    }
-                    else {
-                        if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
-                        return;
-                    }
+					if( !::PtInRect(&m_rcLinks[m_nHoverLink], event.ptMouse) ) {
+						m_nHoverLink = -1;
+						Invalidate();
+						if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
+					}
+					else {
+						if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
+						return;
+					}
 				}
 			}
 		}

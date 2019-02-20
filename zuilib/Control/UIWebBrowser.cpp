@@ -5,7 +5,7 @@
 #include "../Utils/downloadmgr.h"
 #include <mshtml.h>
 
-namespace Zuilib {
+namespace zuilib {
 
 CWebBrowserUI::CWebBrowserUI()
 	: m_pWebBrowser2(nullptr)
@@ -369,37 +369,37 @@ STDMETHODIMP CWebBrowserUI::TranslateAccelerator( LPMSG lpMsg, const GUID* pguid
 
 LRESULT CWebBrowserUI::TranslateAccelerator( MSG *pMsg )
 {
-    if(pMsg->message < WM_KEYFIRST || pMsg->message > WM_KEYLAST)
-        return S_FALSE;
+	if(pMsg->message < WM_KEYFIRST || pMsg->message > WM_KEYLAST)
+		return S_FALSE;
 
 	if( m_pWebBrowser2 == NULL )
-        return E_NOTIMPL;
+		return E_NOTIMPL;
 
-    // 当前Web窗口不是焦点,不处理加速键
-    BOOL bIsChild = FALSE;
-    HWND hTempWnd = NULL;
-    HWND hWndFocus = ::GetFocus();
+	// 当前Web窗口不是焦点,不处理加速键
+	BOOL bIsChild = FALSE;
+	HWND hTempWnd = NULL;
+	HWND hWndFocus = ::GetFocus();
 
-    hTempWnd = hWndFocus;
-    while(hTempWnd != NULL)
-    {
-        if(hTempWnd == m_hwndHost)
-        {
-            bIsChild = TRUE;
-            break;
-        }
-        hTempWnd = ::GetParent(hTempWnd);
-    }
-    if(!bIsChild)
-        return S_FALSE;
+	hTempWnd = hWndFocus;
+	while(hTempWnd != NULL)
+	{
+		if(hTempWnd == m_hwndHost)
+		{
+			bIsChild = TRUE;
+			break;
+		}
+		hTempWnd = ::GetParent(hTempWnd);
+	}
+	if(!bIsChild)
+		return S_FALSE;
 
 	IOleInPlaceActiveObject *pObj;
 	if (FAILED(m_pWebBrowser2->QueryInterface(IID_IOleInPlaceActiveObject, (LPVOID *)&pObj)))
 		return S_FALSE;
 
-    HRESULT hResult = pObj->TranslateAccelerator(pMsg);
-    pObj->Release();
-    return hResult;
+	HRESULT hResult = pObj->TranslateAccelerator(pMsg);
+	pObj->Release();
+	return hResult;
 }
 
 STDMETHODIMP CWebBrowserUI::GetOptionKeyPath( LPOLESTR* pchKey, DWORD dwReserved )
@@ -435,11 +435,11 @@ STDMETHODIMP CWebBrowserUI::TranslateUrl( DWORD dwTranslate, OLECHAR* pchURLIn, 
 	{
 		return m_pWebBrowserEventHandler->TranslateUrl(dwTranslate,pchURLIn,ppchURLOut);
 	}
-    else
-    {
-        *ppchURLOut = 0;
-        return E_NOTIMPL;
-    }
+	else
+	{
+		*ppchURLOut = 0;
+		return E_NOTIMPL;
+	}
 }
 
 STDMETHODIMP CWebBrowserUI::FilterDataObject( IDataObject* pDO, IDataObject** ppDORet )
@@ -448,11 +448,11 @@ STDMETHODIMP CWebBrowserUI::FilterDataObject( IDataObject* pDO, IDataObject** pp
 	{
 		return m_pWebBrowserEventHandler->FilterDataObject(pDO,ppDORet);
 	}
-    else
-    {
-        *ppDORet = 0;
-        return E_NOTIMPL;
-    }
+	else
+	{
+		*ppDORet = 0;
+		return E_NOTIMPL;
+	}
 }
 
 void CWebBrowserUI::SetWebBrowserEventHandler( CWebBrowserEventHandler* pEventHandler )
@@ -622,14 +622,14 @@ HRESULT CWebBrowserUI::SetProperty( IDispatch *pObj, LPOLESTR pName, VARIANT *pV
 IDispatch* CWebBrowserUI::GetHtmlWindow()
 {
 	IDispatch* pDp =  NULL;
-	HRESULT hr;
+	HRESULT hr = NOERROR;
 	if (m_pWebBrowser2)
 		hr=m_pWebBrowser2->get_Document(&pDp);
 
 	if (FAILED(hr))
 		return NULL;
 
-    CComQIPtr<IHTMLDocument2> pHtmlDoc2 = pDp;
+	CComQIPtr<IHTMLDocument2> pHtmlDoc2 = pDp;
 
 	if (pHtmlDoc2 == NULL)
 		return NULL;
@@ -735,4 +735,4 @@ HRESULT STDMETHODCALLTYPE CWebBrowserUI::Exec( __RPC__in_opt const GUID *pguidCm
 	return (hr);
 }
 
-} // namespace Zuilib
+} // namespace zuilib
