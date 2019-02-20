@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "Utils.h"
 
-namespace Zuilib
+namespace zuilib
 {
 	StringOrID::StringOrID(LPCWSTR lpString) 
 		: m_lpstr(lpString)
-    {
-    }
+	{
+	}
 
 	StringOrID::StringOrID(unsigned int nID) 
 		: m_lpstr(MAKEINTRESOURCE(nID))
-    {
-    }
+	{
+	}
 
 	CDuiPoint::CDuiPoint()
 	{
@@ -36,20 +36,20 @@ namespace Zuilib
 		y = GET_Y_LPARAM(lParam);
 	}
 
-    CDuiPoint::CDuiPoint(LPCWSTR pstrValue)
-    {
-        if (pstrValue == NULL || *pstrValue == _T('\0')) x = y = 0;
-        LPTSTR pstr = NULL;
-        x = y = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
-        y = _tcstol(pstr + 1, &pstr, 10);      ASSERT(pstr);
-    }
+	CDuiPoint::CDuiPoint(LPCWSTR pstrValue)
+	{
+		if (pstrValue == NULL || *pstrValue == _T('\0')) x = y = 0;
+		LPTSTR pstr = NULL;
+		x = y = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
+		y = _tcstol(pstr + 1, &pstr, 10);      ASSERT(pstr);
+	}
 
-    CDuiString CDuiPoint::ToString()
-    {
-        CDuiString sPoint;
-        sPoint.SmallFormat(_T("%ld,%ld"), x, y);
-        return sPoint;
-    }
+	CDuiString CDuiPoint::ToString()
+	{
+		CDuiString sPoint;
+		sPoint.SmallFormat(_T("%ld,%ld"), x, y);
+		return sPoint;
+	}
 
 	CDuiSize::CDuiSize()
 	{
@@ -74,20 +74,20 @@ namespace Zuilib
 		cy = _cy;
 	}
 
-    CDuiSize::CDuiSize(LPCWSTR pstrValue)
-    {
-        if (pstrValue == NULL || *pstrValue == _T('\0')) cx = cy = 0;
-        LPTSTR pstr = NULL;
-        cx = cy = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
-        cy = _tcstol(pstr + 1, &pstr, 10);       ASSERT(pstr);
-    }
+	CDuiSize::CDuiSize(LPCWSTR pstrValue)
+	{
+		if (pstrValue == NULL || *pstrValue == _T('\0')) cx = cy = 0;
+		LPTSTR pstr = NULL;
+		cx = cy = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
+		cy = _tcstol(pstr + 1, &pstr, 10);       ASSERT(pstr);
+	}
 
-    CDuiString CDuiSize::ToString()
-    {
-        CDuiString sSize;
-        sSize.SmallFormat(_T("%ld,%ld"), cx, cy);
-        return sSize;
-    }
+	CDuiString CDuiSize::ToString()
+	{
+		CDuiString sSize;
+		sSize.SmallFormat(_T("%ld,%ld"), cx, cy);
+		return sSize;
+	}
 
 	CDuiRect::CDuiRect()
 	{
@@ -110,22 +110,22 @@ namespace Zuilib
 		bottom = iBottom;
 	}
 
-    CDuiRect::CDuiRect(LPCWSTR pstrValue)
-    {
-        if (pstrValue == NULL || *pstrValue == _T('\0')) left = top = right = bottom = 0;
-        LPTSTR pstr = NULL;
-        left = top = right = bottom = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
-        top = bottom = _tcstol(pstr + 1, &pstr, 10);                 ASSERT(pstr);
-        right = _tcstol(pstr + 1, &pstr, 10);                        ASSERT(pstr);
-        bottom = _tcstol(pstr + 1, &pstr, 10);                       ASSERT(pstr);
-    }
+	CDuiRect::CDuiRect(LPCWSTR pstrValue)
+	{
+		if (pstrValue == NULL || *pstrValue == _T('\0')) left = top = right = bottom = 0;
+		LPTSTR pstr = NULL;
+		left = top = right = bottom = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
+		top = bottom = _tcstol(pstr + 1, &pstr, 10);                 ASSERT(pstr);
+		right = _tcstol(pstr + 1, &pstr, 10);                        ASSERT(pstr);
+		bottom = _tcstol(pstr + 1, &pstr, 10);                       ASSERT(pstr);
+	}
 
-    CDuiString CDuiRect::ToString()
-    {
-        CDuiString sRect;
-        sRect.SmallFormat(_T("%ld,%ld,%ld,%ld"), left, top, right, bottom);
-        return sRect;
-    }
+	CDuiString CDuiRect::ToString()
+	{
+		CDuiString sRect;
+		sRect.SmallFormat(_T("%ld,%ld,%ld,%ld"), left, top, right, bottom);
+		return sRect;
+	}
 
 	int CDuiRect::GetWidth() const
 	{
@@ -272,13 +272,13 @@ namespace Zuilib
 		return true;
 	}
 
-    bool CDuiPtrArray::Remove(int iIndex, int iCount)
-    {
-        if( iIndex < 0 || iCount <= 0 || iIndex + iCount > m_nCount ) return false;
-        if (iIndex + iCount < m_nCount) ::CopyMemory(m_ppVoid + iIndex, m_ppVoid + iIndex + iCount, (m_nCount - iIndex - iCount) * sizeof(LPVOID));
-        m_nCount -= iCount;
-        return true;
-    }
+	bool CDuiPtrArray::Remove(int iIndex, int iCount)
+	{
+		if( iIndex < 0 || iCount <= 0 || iIndex + iCount > m_nCount ) return false;
+		if (iIndex + iCount < m_nCount) ::CopyMemory(m_ppVoid + iIndex, m_ppVoid + iIndex + iCount, (m_nCount - iIndex - iCount) * sizeof(LPVOID));
+		m_nCount -= iCount;
+		return true;
+	}
 
 	int CDuiPtrArray::Find(LPVOID pData) const
 	{
@@ -355,9 +355,9 @@ namespace Zuilib
 
 	bool CDuiValArray::Remove(int iIndex, int iCount)
 	{
-        if( iIndex < 0 || iCount <= 0 || iIndex + iCount > m_nCount ) return false;
-        if (iIndex + iCount < m_nCount) ::CopyMemory(m_pVoid + (iIndex * m_iElementSize), m_pVoid + (iIndex + iCount) * m_iElementSize, (m_nCount - iIndex - iCount) * m_iElementSize);
-        m_nCount -= iCount;
+		if( iIndex < 0 || iCount <= 0 || iIndex + iCount > m_nCount ) return false;
+		if (iIndex + iCount < m_nCount) ::CopyMemory(m_pVoid + (iIndex * m_iElementSize), m_pVoid + (iIndex + iCount) * m_iElementSize, (m_nCount - iIndex - iCount) * m_iElementSize);
+		m_nCount -= iCount;
 		return true;
 	}
 
@@ -414,10 +414,10 @@ namespace Zuilib
 			free(m_pstr);
 	}
 
-    CDuiString CDuiString::ToString()
-    {
-        return m_pstr;
-    }
+	CDuiString CDuiString::ToString()
+	{
+		return m_pstr;
+	}
 
 	int CDuiString::GetLength() const
 	{ 
@@ -524,7 +524,7 @@ namespace Zuilib
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
 			int cchStr = (int) strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
+			LPWSTR pwstr = (LPWSTR) _malloca(cchStr);
 			if( pwstr != NULL ) 
 				::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
 			Assign(pwstr);
@@ -542,7 +542,7 @@ namespace Zuilib
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
 			int cchStr = (int) strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
+			LPWSTR pwstr = (LPWSTR)_malloca(cchStr);
 			if( pwstr != NULL ) 
 				::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
 			Append(pwstr);
@@ -721,15 +721,15 @@ namespace Zuilib
 	{
 		LPTSTR szSprintf = NULL;
 		va_list argList;
-        int nLen;
+		int nLen;
 		va_start(argList, pstrFormat);
-        nLen = _vsntprintf(NULL, 0, pstrFormat, argList);
-        szSprintf = (WCHAR*)malloc((nLen + 1) * sizeof(WCHAR));
-        ZeroMemory(szSprintf, (nLen + 1) * sizeof(WCHAR));
+		nLen = _vsntprintf(NULL, 0, pstrFormat, argList);
+		szSprintf = (WCHAR*)malloc((nLen + 1) * sizeof(WCHAR));
+		ZeroMemory(szSprintf, (nLen + 1) * sizeof(WCHAR));
 		int iRet = _vsntprintf(szSprintf, nLen + 1, pstrFormat, argList);
 		va_end(argList);
 		Assign(szSprintf);
-        free(szSprintf);
+		free(szSprintf);
 		return iRet;
 	}
 
@@ -745,13 +745,13 @@ namespace Zuilib
 		return iRet;
 	}
 
-    struct TITEM
-    {
-        CDuiString Key;
-        LPVOID Data;
-        struct TITEM* pPrev;
-        struct TITEM* pNext;
-    };
+	struct TITEM
+	{
+		CDuiString Key;
+		LPVOID Data;
+		struct TITEM* pPrev = nullptr;
+		struct TITEM* pNext = nullptr;
+	};
 
 	static UINT HashKey(LPCWSTR Key)
 	{
@@ -954,4 +954,4 @@ namespace Zuilib
 		::SetCursor(m_hOrigCursor);
 	}
 
-} // namespace Zuilib
+} // namespace zuilib

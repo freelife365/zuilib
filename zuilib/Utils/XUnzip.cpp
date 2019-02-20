@@ -718,7 +718,7 @@ voidpf zcalloc(voidpf opaque, unsigned items, unsigned size);
 void   zcfree(voidpf opaque, voidpf ptr);
 
 #define ZALLOC(strm, items, size) \
-           (*((strm)->zalloc))((strm)->opaque, (items), (size))
+		   (*((strm)->zalloc))((strm)->opaque, (items), (size))
 #define ZFREE(strm, addr)  (*((strm)->zfree))((strm)->opaque, (voidpf)(addr))
 
 //void ZFREE(z_streamp strm,voidpf addr)

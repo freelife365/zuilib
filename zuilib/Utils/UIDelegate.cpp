@@ -1,6 +1,6 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
-namespace Zuilib {
+namespace zuilib {
 
 CDelegateBase::CDelegateBase(void* pObject, void* pFn) 
 {
@@ -92,4 +92,4 @@ bool CEventSource::operator() (void* param)
     return true;
 }
 
-} // namespace Zuilib
+} // namespace zuilib

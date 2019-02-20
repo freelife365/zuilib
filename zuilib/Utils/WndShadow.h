@@ -41,7 +41,7 @@ protected:
 	static HINSTANCE s_hInstance;
 
 	// Parent HWND and CWndShadow object pares, in order to find CWndShadow in ParentProc()
-	static Zuilib::CDuiValArray s_ShadowArray;
+	static zuilib::CDuiValArray s_ShadowArray;
 
 	// 
 	typedef BOOL (WINAPI *pfnUpdateLayeredWindow)(HWND hWnd, HDC hdcDst, POINT *pptDst,
@@ -78,7 +78,7 @@ protected:
 
 	COLORREF m_Color;	// Color of shadow
 
-	Zuilib::TImageInfo* m_pImageInfo;
+	zuilib::TImageInfo* m_pImageInfo;
 	RECT m_rcCorner;
 	RECT m_rcHoleOffset;
 
@@ -102,8 +102,8 @@ public:
 protected:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ParentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    static CWndShadow* FindShadowWindow(HWND hWnd);
-    static int GetShadowWindowIndex(HWND hWnd);
+	static CWndShadow* FindShadowWindow(HWND hWnd);
+	static int GetShadowWindowIndex(HWND hWnd);
 
 	// Redraw, resize and move the shadow
 	// called when window resized or shadow properties changed, but not only moved without resizing

@@ -1,7 +1,7 @@
 #ifndef WIN_IMPL_BASE_HPP
 #define WIN_IMPL_BASE_HPP
 
-namespace Zuilib
+namespace zuilib
 {
 	enum UILIB_RESOURCETYPE
 	{

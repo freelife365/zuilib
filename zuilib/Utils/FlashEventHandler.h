@@ -6,7 +6,7 @@
 #pragma once
 //#include <ExDisp.h>
 
-namespace Zuilib
+namespace zuilib
 {
 	class CFlashEventHandler
 	{

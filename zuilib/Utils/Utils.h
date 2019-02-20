@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Zuilib {
+namespace zuilib {
 	//统一资源ID, 字符串类型和整型统一输出为字符串类型
 	class ZUILIB_API StringOrID
 	{
@@ -14,7 +14,7 @@ namespace Zuilib {
 		LPCWSTR m_lpstr;
 	};
 
-    class CDuiString;
+	class CDuiString;
 	class ZUILIB_API CDuiPoint : public tagPOINT
 	{
 	public:
@@ -22,8 +22,8 @@ namespace Zuilib {
 		CDuiPoint(const POINT& src);
 		CDuiPoint(long x, long y);
 		CDuiPoint(LPARAM lParam);
-        CDuiPoint(LPCWSTR pstrValue);
-        CDuiString ToString();
+		CDuiPoint(LPCWSTR pstrValue);
+		CDuiString ToString();
 	};
 
 	class ZUILIB_API CDuiSize : public tagSIZE
@@ -33,8 +33,8 @@ namespace Zuilib {
 		CDuiSize(const SIZE& src);
 		CDuiSize(const RECT rc);
 		CDuiSize(long cx, long cy);
-        CDuiSize(LPCWSTR pstrValue);
-        CDuiString ToString();
+		CDuiSize(LPCWSTR pstrValue);
+		CDuiString ToString();
 	};
 
 	class ZUILIB_API CDuiRect : public tagRECT
@@ -43,8 +43,8 @@ namespace Zuilib {
 		CDuiRect();
 		CDuiRect(const RECT& src);
 		CDuiRect(long iLeft, long iTop, long iRight, long iBottom);
-        CDuiRect(LPCWSTR pstrValue);
-        CDuiString ToString();
+		CDuiRect(LPCWSTR pstrValue);
+		CDuiString ToString();
 
 		int GetWidth() const;
 		int GetHeight() const;
@@ -59,43 +59,43 @@ namespace Zuilib {
 		void Union(CDuiRect& rc);
 	};
 
-    class ZUILIB_API CDuiString
-    {
-    public:
-        enum { MAX_LOCAL_STRING_LEN = 63 };
+	class ZUILIB_API CDuiString
+	{
+	public:
+		enum { MAX_LOCAL_STRING_LEN = 63 };
 
-        CDuiString();
-        CDuiString(const WCHAR ch);
-        CDuiString(const CDuiString& src);
-        CDuiString(LPCWSTR lpsz, int nLen = -1);
-        ~CDuiString();
-        CDuiString ToString();
+		CDuiString();
+		CDuiString(const WCHAR ch);
+		CDuiString(const CDuiString& src);
+		CDuiString(LPCWSTR lpsz, int nLen = -1);
+		~CDuiString();
+		CDuiString ToString();
 
-        void Empty();
-        int GetLength() const;
-        bool IsEmpty() const;
-        WCHAR GetAt(int nIndex) const;
-        void Append(LPCWSTR pstr);
-        void Assign(LPCWSTR pstr, int nLength = -1);
+		void Empty();
+		int GetLength() const;
+		bool IsEmpty() const;
+		WCHAR GetAt(int nIndex) const;
+		void Append(LPCWSTR pstr);
+		void Assign(LPCWSTR pstr, int nLength = -1);
 		LPCWSTR GetData() const;
 
-        void SetAt(int nIndex, WCHAR ch);
-        operator LPCWSTR() const;
+		void SetAt(int nIndex, WCHAR ch);
+		operator LPCWSTR() const;
 
-        WCHAR operator[] (int nIndex) const;
-        const CDuiString& operator=(const CDuiString& src);
-        const CDuiString& operator=(const WCHAR ch);
+		WCHAR operator[] (int nIndex) const;
+		const CDuiString& operator=(const CDuiString& src);
+		const CDuiString& operator=(const WCHAR ch);
 
-        const CDuiString& operator=(LPCWSTR pstr);
+		const CDuiString& operator=(LPCWSTR pstr);
 
-        const CDuiString& operator=(LPCSTR lpStr);
-        const CDuiString& operator+=(LPCSTR lpStr);
+		const CDuiString& operator=(LPCSTR lpStr);
+		const CDuiString& operator+=(LPCSTR lpStr);
 
-        CDuiString operator+(const CDuiString& src) const;
-        CDuiString operator+(LPCWSTR pstr) const;
-        const CDuiString& operator+=(const CDuiString& src);
-        const CDuiString& operator+=(LPCWSTR pstr);
-        const CDuiString& operator+=(const WCHAR ch);
+		CDuiString operator+(const CDuiString& src) const;
+		CDuiString operator+(LPCWSTR pstr) const;
+		const CDuiString& operator+=(const CDuiString& src);
+		const CDuiString& operator+=(LPCWSTR pstr);
+		const CDuiString& operator+=(const WCHAR ch);
 
 		bool operator == (const CDuiString& str) const;
 		bool operator == (LPCWSTR str) const;
@@ -106,28 +106,28 @@ namespace Zuilib {
 		bool operator >= (LPCWSTR str) const;
 		bool operator >  (LPCWSTR str) const;
 
-        int Compare(LPCWSTR pstr) const;
-        int CompareNoCase(LPCWSTR pstr) const;
+		int Compare(LPCWSTR pstr) const;
+		int CompareNoCase(LPCWSTR pstr) const;
 
-        void MakeUpper();
-        void MakeLower();
+		void MakeUpper();
+		void MakeLower();
 
-        CDuiString Left(int nLength) const;
-        CDuiString Mid(int iPos, int nLength = -1) const;
-        CDuiString Right(int nLength) const;
+		CDuiString Left(int nLength) const;
+		CDuiString Mid(int iPos, int nLength = -1) const;
+		CDuiString Right(int nLength) const;
 
-        int Find(WCHAR ch, int iPos = 0) const;
-        int Find(LPCWSTR pstr, int iPos = 0) const;
-        int ReverseFind(WCHAR ch) const;
-        int Replace(LPCWSTR pstrFrom, LPCWSTR pstrTo);
+		int Find(WCHAR ch, int iPos = 0) const;
+		int Find(LPCWSTR pstr, int iPos = 0) const;
+		int ReverseFind(WCHAR ch) const;
+		int Replace(LPCWSTR pstrFrom, LPCWSTR pstrTo);
 
-        int __cdecl Format(LPCWSTR pstrFormat, ...);
-        int __cdecl SmallFormat(LPCWSTR pstrFormat, ...);
+		int __cdecl Format(LPCWSTR pstrFormat, ...);
+		int __cdecl SmallFormat(LPCWSTR pstrFormat, ...);
 
-    protected:
-        LPWSTR m_pstr;
-        WCHAR m_szBuffer[MAX_LOCAL_STRING_LEN + 1];
-    };
+	protected:
+		LPWSTR m_pstr = nullptr;
+		WCHAR m_szBuffer[MAX_LOCAL_STRING_LEN + 1];
+	};
 
 	class ZUILIB_API CDuiPtrArray
 	{
@@ -179,7 +179,7 @@ namespace Zuilib {
 		int m_nAllocated;
 	};
 
-    struct TITEM;
+	struct TITEM;
 	class ZUILIB_API CDuiStringPtrMap
 	{
 	public:
@@ -250,6 +250,6 @@ namespace Zuilib {
 		}
 	};
 
-}// namespace Zuilib
+}// namespace zuilib
 
 #endif // __UTILS_H__

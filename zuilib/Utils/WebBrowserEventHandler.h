@@ -3,7 +3,7 @@
 #include <ExDispid.h>
 #include <mshtmhst.h>
 
-namespace Zuilib
+namespace zuilib
 {
 	class CWebBrowserEventHandler
 	{

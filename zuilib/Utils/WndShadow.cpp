@@ -26,7 +26,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //****************************************************************************
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "WndShadow.h"
 #include <crtdbg.h>
 #include <math.h>
@@ -52,7 +52,7 @@
 #define ULW_ALPHA 0x00000002
 #endif
 
-using namespace Zuilib;
+using namespace zuilib;
 CWndShadow::pfnUpdateLayeredWindow CWndShadow::s_UpdateLayeredWindow = NULL;
 
 const WCHAR *strWndClassName = _T("DuiShadowWnd");
@@ -61,11 +61,11 @@ HINSTANCE CWndShadow::s_hInstance = (HINSTANCE)INVALID_HANDLE_VALUE;
 
 typedef struct HWNDSHADOW
 {
-    HWND hWnd;
-    CWndShadow *pWndShadow;
+	HWND hWnd;
+	CWndShadow *pWndShadow;
 } HwndShadow;
 
-Zuilib::CDuiValArray CWndShadow::s_ShadowArray(sizeof(HwndShadow), 10);
+zuilib::CDuiValArray CWndShadow::s_ShadowArray(sizeof(HwndShadow), 10);
 
 CWndShadow::CWndShadow(void)
 	: m_hWnd((HWND)INVALID_HANDLE_VALUE)
@@ -101,7 +101,9 @@ bool CWndShadow::Initialize(HINSTANCE hInstance)
 		return false;
 
 	HMODULE hUser32 = GetModuleHandle(_T("USER32.DLL"));
-	s_UpdateLayeredWindow = (pfnUpdateLayeredWindow)GetProcAddress(hUser32, "UpdateLayeredWindow");
+	if (hUser32) {
+		s_UpdateLayeredWindow = (pfnUpdateLayeredWindow)GetProcAddress(hUser32, "UpdateLayeredWindow");
+	}
 	
 	// If the import did not succeed, make sure your app can handle it!
 	if (NULL == s_UpdateLayeredWindow)
@@ -154,7 +156,7 @@ void CWndShadow::Create(HWND hParentWnd)
 	// Add parent window - shadow pair to the map
 	_ASSERT(FindShadowWindow(hParentWnd) == NULL);	// Only one shadow for each window
 
-    HwndShadow hs = {hParentWnd, this};
+	HwndShadow hs = {hParentWnd, this};
 	s_ShadowArray.Add(&hs);
 
 	// Create the shadow window
@@ -186,15 +188,15 @@ void CWndShadow::Create(HWND hParentWnd)
 
 LRESULT CALLBACK CWndShadow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    CWindowWnd* pThis = NULL;
-    if( uMsg == WM_MOUSEACTIVATE ) return MA_NOACTIVATE;
-    return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
+	CWindowWnd* pThis = NULL;
+	if( uMsg == WM_MOUSEACTIVATE ) return MA_NOACTIVATE;
+	return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK CWndShadow::ParentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CWndShadow *pThis = FindShadowWindow(hwnd);
-    _ASSERT (pThis);
+	_ASSERT (pThis);
 
 	switch(uMsg)
 	{
@@ -287,10 +289,10 @@ LRESULT CALLBACK CWndShadow::ParentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
 		break;
 		
 	case WM_NCDESTROY:
-        {
-            int iIndex = GetShadowWindowIndex(hwnd);
-            if (iIndex >= 0) s_ShadowArray.Remove(iIndex);
-        }
+		{
+			int iIndex = GetShadowWindowIndex(hwnd);
+			if (iIndex >= 0) s_ShadowArray.Remove(iIndex);
+		}
 		break;
 
 	}
@@ -305,22 +307,22 @@ LRESULT CALLBACK CWndShadow::ParentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
 
 CWndShadow* CWndShadow::FindShadowWindow(HWND hWnd)
 {
-    for (int i = 0; i < s_ShadowArray.GetSize(); ++i)
-    {
-        HwndShadow* hwndShadow = (HwndShadow*)s_ShadowArray[i];
-        if (hwndShadow->hWnd == hWnd) return hwndShadow->pWndShadow;
-    }
-    return NULL;
+	for (int i = 0; i < s_ShadowArray.GetSize(); ++i)
+	{
+		HwndShadow* hwndShadow = (HwndShadow*)s_ShadowArray[i];
+		if (hwndShadow->hWnd == hWnd) return hwndShadow->pWndShadow;
+	}
+	return NULL;
 }
 
 int CWndShadow::GetShadowWindowIndex(HWND hWnd)
 {
-    for (int i = 0; i < s_ShadowArray.GetSize(); ++i)
-    {
-        HwndShadow* hwndShadow = (HwndShadow*)s_ShadowArray[i];
-        if (hwndShadow->hWnd == hWnd) return i;
-    }
-    return -1;
+	for (int i = 0; i < s_ShadowArray.GetSize(); ++i)
+	{
+		HwndShadow* hwndShadow = (HwndShadow*)s_ShadowArray[i];
+		if (hwndShadow->hWnd == hWnd) return i;
+	}
+	return -1;
 }
 
 void CWndShadow::Update(HWND hParent)
