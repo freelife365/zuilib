@@ -59,7 +59,7 @@ public:
 	HWND GetHWND() const;
 	operator HWND() const;
 
-	bool RegisterWindowClass();
+	bool RegisterWindowClass(); //RegisterClassµÄ·â×°
 	bool RegisterSuperclass();
 
 	HWND Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, const RECT rc, HMENU hMenu = NULL);
