@@ -3,7 +3,11 @@
 
 namespace zuilib
 {
-	CProgressUI::CProgressUI() : m_bHorizontal(true), m_nMin(0), m_nMax(100), m_nValue(0)
+	CProgressUI::CProgressUI() 
+		: m_bHorizontal(true)
+		, m_nMin(0)
+		, m_nMax(100)
+		, m_nValue(0)
 	{
 		m_uTextStyle = DT_SINGLELINE | DT_CENTER;
 		SetFixedHeight(12);

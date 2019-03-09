@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #ifdef _USEIMM
-#include <imm.h>
+#include <imm.h> //输入法的用户接口都是调用IMM
 #pragma comment(lib, "imm32.lib")
 #endif
+
 // These constants are for backward compatibility. They are the 
 // sizes used for initialization and reset in RichEdit 1.0
 
@@ -32,7 +33,7 @@ EXTERN_C const IID IID_ITextHost = { /* c5bdd8d0-d26e-11ce-a89e-00aa006cadc5 */
 #define HIMETRIC_PER_INCH 2540
 #endif
 
-#include <textserv.h>
+#include <TextServ.h>
 
 class CTxtWinHost : public ITextHost
 {
@@ -140,7 +141,7 @@ private:
 	ITextServices	*pserv;		    // pointer to Text Services object
 	// Properties
 
-	DWORD		dwStyle;				// style bits
+	DWORD	dwStyle;				// style bits
 
 	unsigned	fEnableAutoWordSel	:1;	// enable Word style auto word selection?
 	unsigned	fWordWrap			:1;	// Whether control should word wrap
@@ -229,19 +230,19 @@ HRESULT CreateHost(CRichEditUI *re, const CREATESTRUCT *pcs, CTxtWinHost **pptec
 	HRESULT hr = E_FAIL;
 	//GdiSetBatchLimit(1);
 
-	CTxtWinHost *phost = new CTxtWinHost();
-	if(phost)
+	CTxtWinHost *pHost = new CTxtWinHost();
+	if(pHost)
 	{
-		if (phost->Init(re, pcs))
+		if (pHost->Init(re, pcs))
 		{
-			*pptec = phost;
+			*pptec = pHost;
 			hr = S_OK;
 		}
 	}
 
 	if (FAILED(hr))
 	{
-		delete phost;
+		delete pHost;
 	}
 
 	return TRUE;
@@ -742,7 +743,7 @@ HRESULT	CTxtWinHost::TxGetSelectionBarWidth (LONG *plSelBarWidth)
 
 void CTxtWinHost::SetWordWrap(BOOL fWordWrap)
 {
-	fWordWrap = fWordWrap;
+	//fWordWrap = fWordWrap;
 	pserv->OnTxPropertyBitsChange(TXTBIT_WORDWRAP, fWordWrap ? TXTBIT_WORDWRAP : 0);
 }
 
@@ -844,7 +845,7 @@ BOOL CTxtWinHost::GetAllowBeep()
 
 void CTxtWinHost::SetAllowBeep(BOOL fAllowBeep)
 {
-	fAllowBeep = fAllowBeep;
+	//fAllowBeep = fAllowBeep;
 
 	pserv->OnTxPropertyBitsChange(TXTBIT_ALLOWBEEP, 
 		fAllowBeep ? TXTBIT_ALLOWBEEP : 0);

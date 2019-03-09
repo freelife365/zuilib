@@ -8,8 +8,7 @@
 #ifdef _USE_GDIPLUS
 #include <GdiPlus.h>
 #pragma comment( lib, "GdiPlus.lib" )
-// UMU: DO NOT use "using namespace" in .h file
-//using namespace Gdiplus;
+
 class ZUILIB_API Gdiplus::RectF;
 struct ZUILIB_API Gdiplus::GdiplusStartupInput;
 

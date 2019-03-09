@@ -1198,7 +1198,7 @@ bool CActiveXUI::DoCreateControl()
 
 	HRESULT Hr = E_FAIL;
 	if( !m_sModuleName.IsEmpty() ) {
-		HMODULE hModule = ::LoadLibrary((LPCWSTR)m_sModuleName);
+		HMODULE hModule = ::LoadLibrary(m_sModuleName.GetData());
 		if( hModule != NULL ) {
 			IClassFactory* aClassFactory = NULL;
 			DllGetClassObjectFunc aDllGetClassObjectFunc = (DllGetClassObjectFunc)::GetProcAddress(hModule, "DllGetClassObject");
