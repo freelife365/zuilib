@@ -222,8 +222,8 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if( uMsg == WM_CREATE ) {
 		m_pm.SetForceUseSharedRes(true);
 		m_pm.Init(m_hWnd);
-		// The trick is to add the items to the new container. Their owner gets
-		// reassigned by this operation - which is why it is important to reassign
+		// The trick is to add the items to the new container. 
+		// Their owner gets reassigned by this operation - which is why it is important to reassign
 		// the items back to the righfull owner/manager when the window closes.
 		m_pLayout = new CComboBodyUI(m_pOwner);
 		m_pLayout->SetManager(&m_pm, NULL, true);
@@ -243,6 +243,22 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		m_pm.AttachDialog(m_pLayout);
 		m_pm.AddNotifier(this);
+
+		CScrollBarUI* pHorizontalScrollBar = m_pLayout->GetHorizontalScrollBar();
+		if (pHorizontalScrollBar)
+		{
+			LPCTSTR pDefaultAttributes = m_pOwner->GetManager()->GetDefaultAttributeList(_T("HScrollBar"));
+			if (pDefaultAttributes)
+				pHorizontalScrollBar->SetAttributeList(pDefaultAttributes);
+		}
+		CScrollBarUI* pVerticalScrollBar = m_pLayout->GetVerticalScrollBar();
+		if (pVerticalScrollBar)
+		{
+			LPCTSTR pDefaultAttributes = m_pOwner->GetManager()->GetDefaultAttributeList(_T("VScrollBar"));
+			if (pDefaultAttributes)
+				pVerticalScrollBar->SetAttributeList(pDefaultAttributes);
+		}
+
 		return 0;
 	}
 	else if( uMsg == WM_CLOSE ) {
