@@ -45,6 +45,14 @@ public:
 
 	bool GetShowText() const;
 	void SetShowText(bool flag);
+
+	void SetTextColor(DWORD dwTextColor);
+	DWORD GetTextColor() const;
+	void SetDisabledTextColor(DWORD dwTextColor);
+	DWORD GetDisabledTextColor() const;
+	void SetFont(int index);
+	int GetFont() const;
+
 	RECT GetTextPadding() const;
 	void SetTextPadding(RECT rc);
 	LPCWSTR GetNormalImage() const;
@@ -124,6 +132,11 @@ protected:
 	CDuiString m_sDropBoxAttributes;
 	SIZE m_szDropBox;
 	UINT m_uButtonState;
+
+	int		m_iFont;
+	DWORD	m_dwTextColor;
+	DWORD	m_dwDisabledTextColor;
+	UINT	m_uTextStyle;
 
 	TDrawInfo m_diNormal;
 	TDrawInfo m_diHot;
