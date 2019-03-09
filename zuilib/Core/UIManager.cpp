@@ -1047,8 +1047,8 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
 				if( m_bLayered ) {
 					RECT rcWnd = { 0 };
 					::GetWindowRect(m_hWndPaint, &rcWnd);
-					DWORD dwWidth = rcClient.right - rcClient.left;
-					DWORD dwHeight = rcClient.bottom - rcClient.top;
+					LONG dwWidth = rcClient.right - rcClient.left;
+					LONG dwHeight = rcClient.bottom - rcClient.top;
 					RECT rcLayeredClient = rcClient;
 					rcLayeredClient.left += m_rcLayeredInset.left;
 					rcLayeredClient.top += m_rcLayeredInset.top;

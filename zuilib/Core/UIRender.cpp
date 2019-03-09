@@ -42,9 +42,8 @@ extern ZRESULT UnzipItem(HZIP hz, int index, void *dst, unsigned int len, DWORD 
 
 extern "C"
 {
-	extern unsigned char *stbi_load_from_memory(unsigned char const *buffer, int len, int *x, int *y, \
-		int *comp, int req_comp);
-	extern void     stbi_image_free(void *retval_from_stbi_load);
+	extern unsigned char *stbi_load_from_memory(unsigned char const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+	extern void stbi_image_free(void *retval_from_stbi_load);
 
 };
 
@@ -54,9 +53,9 @@ static int g_iFontID = MAX_FONT_ID;
 
 CRenderClip::~CRenderClip()
 {
-	ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
-	ASSERT(::GetObjectType(hRgn)==OBJ_REGION);
-	ASSERT(::GetObjectType(hOldRgn)==OBJ_REGION);
+	ASSERT(::GetObjectType(hDC) == OBJ_DC || ::GetObjectType(hDC) == OBJ_MEMDC);
+	ASSERT(::GetObjectType(hRgn) == OBJ_REGION);
+	ASSERT(::GetObjectType(hOldRgn) == OBJ_REGION);
 	::SelectClipRgn(hDC, hOldRgn);
 	::DeleteObject(hOldRgn);
 	::DeleteObject(hRgn);

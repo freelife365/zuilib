@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #ifdef _DEBUG
-#include <Shlwapi.h>
+#include <Shlwapi.h> //PathFileExists
 #pragma comment(lib, "shlwapi.lib")
 #endif
 
@@ -240,7 +240,16 @@ HWND CWindowWnd::Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD 
 {
 	if( GetSuperClassName() != NULL && !RegisterSuperclass() ) return NULL;
 	if( GetSuperClassName() == NULL && !RegisterWindowClass() ) return NULL;
-	m_hWnd = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrName, dwStyle, x, y, cx, cy, hwndParent, hMenu, CPaintManagerUI::GetInstance(), this);
+	m_hWnd = ::CreateWindowEx(
+		dwExStyle, 
+		GetWindowClassName(), 
+		pstrName, 
+		dwStyle, 
+		x, y, cx, cy, 
+		hwndParent, 
+		hMenu, 
+		CPaintManagerUI::GetInstance(), 
+		this);
 	ASSERT(m_hWnd!=NULL);
 	return m_hWnd;
 }

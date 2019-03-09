@@ -38,7 +38,8 @@ namespace zuilib
 
 	CDuiPoint::CDuiPoint(LPCWSTR pstrValue)
 	{
-		if (pstrValue == NULL || *pstrValue == _T('\0')) x = y = 0;
+		if (pstrValue == NULL || *pstrValue == _T('\0')) 
+			x = y = 0;
 		LPTSTR pstr = NULL;
 		x = y = _tcstol(pstrValue, &pstr, 10); ASSERT(pstr);
 		y = _tcstol(pstr + 1, &pstr, 10);      ASSERT(pstr);

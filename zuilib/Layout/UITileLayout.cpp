@@ -3,8 +3,12 @@
 
 namespace zuilib
 {
-	CTileLayoutUI::CTileLayoutUI() : m_nColumns(1), m_nRows(0), m_nColumnsFixed(0), m_iChildVPadding(0),
-		m_bIgnoreItemPadding(true)
+	CTileLayoutUI::CTileLayoutUI() 
+		: m_nColumns(1)
+		, m_nRows(0)
+		, m_nColumnsFixed(0)
+		, m_iChildVPadding(0)
+		, m_bIgnoreItemPadding(true)
 	{
 		m_szItem.cx = m_szItem.cy = 80;
 	}

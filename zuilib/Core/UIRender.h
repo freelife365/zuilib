@@ -28,7 +28,8 @@ public:
 	static void AdjustImage(bool bUseHSL, TImageInfo* imageInfo, short H, short S, short L);
 	static TImageInfo* LoadImage(StringOrID bitmap, LPCWSTR type = NULL, DWORD mask = 0);
 	static void FreeImage(TImageInfo* bitmap, bool bDelete = true);
-	static void DrawImage(HDC hDC, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, \
+	static void DrawImage(HDC hDC, HBITMAP hBitmap, 
+		const RECT& rc, const RECT& rcPaint, 
 		const RECT& rcBmpPart, const RECT& rcScale9, bool alphaChannel, BYTE uFade = 255, 
 		bool hole = false, bool xtiled = false, bool ytiled = false);
 	static bool DrawImage(HDC hDC, CPaintManagerUI* pManager, const RECT& rcItem, const RECT& rcPaint, TDrawInfo& drawInfo);

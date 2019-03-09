@@ -3,7 +3,10 @@
 
 namespace zuilib
 {
-	CVerticalLayoutUI::CVerticalLayoutUI() : m_iSepHeight(0), m_uButtonState(0), m_bImmMode(false)
+	CVerticalLayoutUI::CVerticalLayoutUI() 
+		: m_iSepHeight(0)
+		, m_uButtonState(0)
+		, m_bImmMode(false)
 	{
 		m_ptLastMouse.x = m_ptLastMouse.y = 0;
 		::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
