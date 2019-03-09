@@ -8,7 +8,7 @@ CScrollBarUI::CScrollBarUI()
 	, m_nRange(100)
 	, m_nScrollPos(0)
 	, m_nLineSize(SCROLLBAR_LINESIZE)
-	,  m_nScrollUnit(1)
+	, m_nScrollUnit(1)
 	, m_pOwner(NULL)
 	, m_nLastScrollPos(0)
 	, m_nLastScrollOffset(0)
@@ -857,17 +857,19 @@ void CScrollBarUI::DoEvent(TEventUI& event)
 	}
 	if( event.Type == UIEVENT_MOUSELEAVE )
 	{
-		if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
+		if( !::PtInRect(&m_rcItem, event.ptMouse ) ) {
 			if( IsEnabled() ) {
 				m_uButton1State &= ~UISTATE_HOT;
 				m_uButton2State &= ~UISTATE_HOT;
 				m_uThumbState &= ~UISTATE_HOT;
 				Invalidate();
 			}
-			if (m_pManager) m_pManager->RemoveMouseLeaveNeeded(this);
+			if (m_pManager) 
+				m_pManager->RemoveMouseLeaveNeeded(this);
 		}
 		else {
-			if (m_pManager) m_pManager->AddMouseLeaveNeeded(this);
+			if (m_pManager) 
+				m_pManager->AddMouseLeaveNeeded(this);
 			return;
 		}
 	}
