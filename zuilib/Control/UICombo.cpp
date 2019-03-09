@@ -130,7 +130,7 @@ bool CComboBodyUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopContro
 	return true;
 }
 
-class CComboWnd : public CWindowWnd
+class CComboWnd : public CWindowWnd, INotifyUI
 {
 public:
 	void Init(CComboUI* pOwner);
@@ -138,7 +138,7 @@ public:
 	void OnFinalMessage(HWND hWnd);
 
 	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-
+	void Notify(TNotifyUI& msg) override;
 	void EnsureVisible(int iIndex);
 	void Scroll(int dx, int dy);
 
@@ -146,7 +146,7 @@ public:
 	virtual UINT GetClassStyle() const;
 #endif
 
-public:
+private:
 	CPaintManagerUI m_pm;
 	CComboUI* m_pOwner = nullptr;
 	CVerticalLayoutUI* m_pLayout;
@@ -242,7 +242,7 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
 		}
 		m_pm.AttachDialog(m_pLayout);
-		
+		m_pm.AddNotifier(this);
 		return 0;
 	}
 	else if( uMsg == WM_CLOSE ) {
@@ -323,6 +323,15 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LRESULT lRes = 0;
 	if( m_pm.MessageHandler(uMsg, wParam, lParam, lRes) ) return lRes;
 	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+}
+
+void CComboWnd::Notify(TNotifyUI & msg)
+{
+	if (msg.sType == DUI_MSGTYPE_ITEMCLICK || msg.sType == DUI_MSGTYPE_ITEMACTIVATE || msg.sType == DUI_MSGTYPE_LINK  //ListElement的一些事件
+		||	msg.sType == DUI_MSGTYPE_CLICK)	//Button的一些事件,其他一些控件一般不会用作combo的item,因此一些事件也没有进行转发,可根据需要增删
+	{
+		m_pOwner->GetManager()->SendNotify(msg.pSender, msg.sType, msg.wParam, msg.lParam);
+	}
 }
 
 void CComboWnd::EnsureVisible(int iIndex)
