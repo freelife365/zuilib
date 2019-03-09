@@ -732,7 +732,8 @@ bool CPaintManagerUI::PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		break;
 	case WM_SYSCHAR:
 		{
-		   if( m_pRoot == NULL ) return false;
+		   if( m_pRoot == NULL ) 
+			   return false;
 		   // Handle ALT-shortcut key-combinations
 		   FINDSHORTCUT fs = { 0 };
 		   fs.ch = toupper((int)wParam);

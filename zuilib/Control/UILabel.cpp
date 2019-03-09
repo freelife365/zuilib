@@ -29,10 +29,10 @@ namespace zuilib
 		m_EnabledShadow(false),
 		m_GradientLength(0)
 	{
-		m_ShadowOffset.X		= 0.0f;
-		m_ShadowOffset.Y		= 0.0f;
-		m_ShadowOffset.Width	= 0.0f;
-		m_ShadowOffset.Height	= 0.0f;
+		m_ShadowOffset.X	= 0.0F;
+		m_ShadowOffset.Y	= 0.0F;
+		m_ShadowOffset.Width	= 0.0F;
+		m_ShadowOffset.Height	= 0.0F;
 
 		m_cxyFixedLast.cx = m_cxyFixedLast.cy = 0;
 		m_szAvailableLast.cx = m_szAvailableLast.cy = 0;
@@ -405,7 +405,7 @@ namespace zuilib
 				if (iFuzzyWidth < 1) iFuzzyWidth = 1;
 				int iFuzzyHeight = (int)(nRc.Height/GetLuminousFuzzy());
 				if (iFuzzyHeight < 1) iFuzzyHeight = 1;
-				RectF nTextRc(0.0f, 0.0f, nRc.Width, nRc.Height);
+				RectF nTextRc(0.0F, 0.0F, nRc.Width, nRc.Height);
 
 				Bitmap Bit1((INT)nRc.Width, (INT)nRc.Height);
 				Graphics g1(&Bit1);
@@ -461,11 +461,15 @@ namespace zuilib
 		if(_angle > 180 || _angle < -180) return;
 
 		RECT rc = m_rcItem;
-		if(_angle >= 0 && _angle <= 180) rc.top -= _offset;
-		else if(_angle > -180 && _angle < 0) rc.top += _offset;
+		if(_angle >= 0 && _angle <= 180) 
+			rc.top -= _offset;
+		else if(_angle > -180 && _angle < 0) 
+			rc.top += _offset;
 
-		if(_angle > -90 && _angle <= 90) rc.left -= _offset;
-		else if( _angle > 90 || _angle < -90) rc.left += _offset;
+		if(_angle > -90 && _angle <= 90) 
+			rc.left -= _offset;
+		else if( _angle > 90 || _angle < -90) 
+			rc.left += _offset;
 
 		m_ShadowOffset.X = (float)rc.top;
 		m_ShadowOffset.Y = (float)rc.left;
@@ -504,7 +508,7 @@ namespace zuilib
 
 	void CLabelUI::SetLuminousFuzzy(float fFuzzy)
 	{
-		if (fFuzzy < 0.0001f) return;
+		if (fFuzzy < 0.0001F) return;
 		m_fLuminousFuzzy = fFuzzy;
 		Invalidate();
 	}

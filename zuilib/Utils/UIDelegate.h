@@ -29,9 +29,20 @@ class CDelegateStatic: public CDelegateBase
 {
 	typedef bool (*Fn)(void*);
 public:
-	CDelegateStatic(Fn pFn) : CDelegateBase(nullptr, pFn) { } 
-	CDelegateStatic(const CDelegateStatic& rhs) : CDelegateBase(rhs) { } 
-	virtual CDelegateBase* Copy() const { return new CDelegateStatic(*this); }
+	CDelegateStatic(Fn pFn) 
+		: CDelegateBase(nullptr, pFn) 
+	{
+
+	} 
+	CDelegateStatic(const CDelegateStatic& rhs) 
+		: CDelegateBase(rhs) 
+	{ 
+
+	} 
+	virtual CDelegateBase* Copy() const 
+	{ 
+		return new CDelegateStatic(*this); 
+	}
 
 protected:
 	virtual bool Invoke(void* param)
@@ -41,19 +52,30 @@ protected:
 	}
 };
 
-template <class O, class T>
+template <class M, class T>
 class CDelegate : public CDelegateBase
 {
 	typedef bool (T::* Fn)(void*);
 public:
-	CDelegate(O* pObj, Fn pFn) : CDelegateBase(pObj, *(void**)&pFn) { }
-	CDelegate(const CDelegate& rhs) : CDelegateBase(rhs) { } 
-	virtual CDelegateBase* Copy() const { return new CDelegate(*this); }
+	CDelegate(M* pObj, Fn pFn) 
+		: CDelegateBase(pObj, *(void**)&pFn) 
+	{ 
+
+	}
+	CDelegate(const CDelegate& rhs) 
+		: CDelegateBase(rhs) 
+	{
+
+	} 
+	virtual CDelegateBase* Copy() const 
+	{ 
+		return new CDelegate(*this); 
+	}
 
 protected:
 	virtual bool Invoke(void* param)
 	{
-		O* pObject = (O*) GetObject();
+		M* pObject = (M*) GetObject();
 		union
 		{
 			void* ptr;
@@ -66,10 +88,10 @@ private:
 	Fn m_pFn;
 };
 
-template <class O, class T>
-CDelegate<O, T> MakeDelegate(O* pObject, bool (T::* pFn)(void*))
+template <class M, class T>
+CDelegate<M, T> MakeDelegate(M* pObject, bool (T::* pFn)(void*))
 {
-	return CDelegate<O, T>(pObject, pFn);
+	return CDelegate<M, T>(pObject, pFn);
 }
 
 inline CDelegateStatic MakeDelegate(bool (*pFn)(void*))

@@ -273,26 +273,26 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	m_PaintManager.AddPreMessageFilter(this);
 
 	CDialogBuilder builder;
-	CDuiString strResourcePath=m_PaintManager.GetResourcePath();
+	CDuiString strResourcePath= CPaintManagerUI::GetResourcePath();
 	if (strResourcePath.IsEmpty())
 	{
-		strResourcePath=m_PaintManager.GetInstancePath();
+		strResourcePath= CPaintManagerUI::GetInstancePath();
 		strResourcePath+=GetSkinFolder().GetData();
 	}
-	m_PaintManager.SetResourcePath(strResourcePath.GetData());
+	CPaintManagerUI::SetResourcePath(strResourcePath.GetData());
 
 	switch(GetResourceType())
 	{
 	case UILIB_ZIP:
-		m_PaintManager.SetResourceZip(GetZIPFileName().GetData(), true);
+		CPaintManagerUI::SetResourceZip(GetZIPFileName().GetData(), true);
 		break;
 	case UILIB_ZIPRESOURCE:
 		{
-			HRSRC hResource = ::FindResource(m_PaintManager.GetResourceDll(), GetResourceID(), _T("ZIPRES"));
+			HRSRC hResource = ::FindResource(CPaintManagerUI::GetResourceDll(), GetResourceID(), _T("ZIPRES"));
 			if( hResource == NULL )
 				return 0L;
 			DWORD dwSize = 0;
-			HGLOBAL hGlobal = ::LoadResource(m_PaintManager.GetResourceDll(), hResource);
+			HGLOBAL hGlobal = ::LoadResource(CPaintManagerUI::GetResourceDll(), hResource);
 			if( hGlobal == NULL ) 
 			{
 #if defined(WIN32) && !defined(UNDER_CE)
@@ -300,7 +300,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 #endif
 				return 0L;
 			}
-			dwSize = ::SizeofResource(m_PaintManager.GetResourceDll(), hResource);
+			dwSize = ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource);
 			if( dwSize == 0 )
 				return 0L;
 			m_lpResourceZIPBuffer = new BYTE[ dwSize ];
@@ -313,6 +313,8 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 #endif
 			m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
 		}
+		break;
+	default:
 		break;
 	}
 
@@ -433,24 +435,19 @@ void WindowImplBase::OnClick(TNotifyUI& msg)
 	if( sCtrlName == _T("closebtn") )
 	{
 		Close();
-		return; 
 	}
 	else if( sCtrlName == _T("minbtn"))
 	{ 
 		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
-		return; 
 	}
 	else if( sCtrlName == _T("maxbtn"))
 	{ 
 		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0); 
-		return; 
 	}
 	else if( sCtrlName == _T("restorebtn"))
 	{ 
 		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
-		return; 
 	}
-	return;
 }
 
 void WindowImplBase::Notify(TNotifyUI& msg)

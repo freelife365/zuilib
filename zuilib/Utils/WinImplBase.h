@@ -22,7 +22,7 @@ namespace zuilib
 		WindowImplBase(){};
 		virtual ~WindowImplBase(){};
 		virtual void InitWindow(){};
-		virtual void OnFinalMessage( HWND hWnd );
+		virtual void OnFinalMessage(HWND hWnd);
 		virtual void Notify(TNotifyUI& msg);
 
 		DUI_DECLARE_MESSAGE_MAP()
