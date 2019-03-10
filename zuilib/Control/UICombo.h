@@ -122,6 +122,10 @@ public:
 	void PaintText(HDC hDC);
 	void PaintStatusImage(HDC hDC);
 
+	LPCTSTR GetVscrollbar() const;
+	LPCTSTR GetHscrollbar() const;
+	LPCTSTR GetVscrollStyle() const;
+	LPCTSTR GetHscrollStyle() const;
 protected:
 	CComboWnd* m_pWindow;
 
@@ -130,6 +134,10 @@ protected:
 	bool m_bSelectCloseFlag;
 	RECT m_rcTextPadding;
 	CDuiString m_sDropBoxAttributes;
+	CDuiString m_sVscrollbar;
+	CDuiString m_sVscrollbarStyle;
+	CDuiString m_sHscrollbar;
+	CDuiString m_sHscrollStyle;
 	SIZE m_szDropBox;
 	UINT m_uButtonState;
 
