@@ -171,8 +171,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
-typedef CControlUI* (*LPCREATECONTROL)(LPCWSTR pstrType);
-
+using LPCREATECONTROL = CControlUI* (*)(LPCWSTR pstrType);
 
 class ZUILIB_API CPaintManagerUI
 {

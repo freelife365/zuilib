@@ -5,7 +5,7 @@
 
 namespace zuilib {
 
-typedef CControlUI* (CALLBACK* FINDCONTROLPROC)(CControlUI*, LPVOID);
+using FINDCONTROLPROC = CControlUI * (CALLBACK *)(CControlUI*, LPVOID);
 
 class ZUILIB_API CControlUI
 {

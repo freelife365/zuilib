@@ -1187,7 +1187,7 @@ void CActiveXUI::ReleaseControl()
 	m_pManager->RemoveMessageFilter(this);
 }
 
-typedef HRESULT (__stdcall *DllGetClassObjectFunc)(REFCLSID rclsid, REFIID riid, LPVOID* ppv); 
+using DllGetClassObjectFunc = HRESULT(WINAPI *)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
 
 bool CActiveXUI::DoCreateControl()
 {

@@ -33,7 +33,8 @@ typedef struct tagTNotifyUI
 } TNotifyUI;
 
 class CNotifyPump;
-typedef void (CNotifyPump::*DUI_PMSG)(TNotifyUI& msg);  //指针类型
+
+using DUI_PMSG = void (CNotifyPump::*) (TNotifyUI& msg);  //指针类型
 
 union DuiMessageMapFunctions
 {

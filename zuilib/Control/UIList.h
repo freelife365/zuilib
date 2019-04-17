@@ -7,7 +7,8 @@
 
 namespace zuilib {
 
-typedef int (CALLBACK *PULVCompareFunc)(UINT_PTR, UINT_PTR, UINT_PTR);
+
+using PULVCompareFunc = int (CALLBACK *)(UINT_PTR, UINT_PTR, UINT_PTR);
 
 class CListHeaderUI;
 

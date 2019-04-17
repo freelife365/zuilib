@@ -44,9 +44,12 @@ protected:
 	static zuilib::CDuiValArray s_ShadowArray;
 
 	// 
-	typedef BOOL (WINAPI *pfnUpdateLayeredWindow)(HWND hWnd, HDC hdcDst, POINT *pptDst,
-		SIZE *psize, HDC hdcSrc, POINT *pptSrc, COLORREF crKey,
+	using pfnUpdateLayeredWindow = BOOL(WINAPI *)(
+		HWND hWnd, 
+		HDC hdcDst, POINT *pptDst, SIZE *psize, 
+		HDC hdcSrc, POINT *pptSrc, COLORREF crKey,
 		BLENDFUNCTION *pblend, DWORD dwFlags);
+
 	static pfnUpdateLayeredWindow s_UpdateLayeredWindow;
 
 	HWND m_hWnd;
