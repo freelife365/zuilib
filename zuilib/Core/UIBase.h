@@ -1,7 +1,6 @@
 #ifndef __UIBASE_H__
 #define __UIBASE_H__
 
-
 #pragma once
 
 namespace zuilib {

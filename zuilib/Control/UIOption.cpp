@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIOption.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	COptionUI::COptionUI() 
 		: m_bSelected(false)
 		, m_dwSelectedBkColor(0)

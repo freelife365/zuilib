@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CContainerUI::CContainerUI()
 		: m_iChildPadding(0)
 		, m_iChildAlign(DT_LEFT)

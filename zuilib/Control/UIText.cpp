@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIText.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CTextUI::CTextUI() 
 		: m_nLinks(0)
 		, m_nHoverLink(-1)

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIVerticalLayout.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CVerticalLayoutUI::CVerticalLayoutUI() 
 		: m_iSepHeight(0)
 		, m_uButtonState(0)

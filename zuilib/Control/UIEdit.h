@@ -3,8 +3,8 @@
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class CEditWnd;
 
 	class ZUILIB_API CEditUI : public CLabelUI

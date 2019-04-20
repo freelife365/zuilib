@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIEdit.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class CEditWnd : public CWindowWnd
 	{
 	public:

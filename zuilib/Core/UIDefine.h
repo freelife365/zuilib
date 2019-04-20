@@ -2,8 +2,8 @@
 //////////////BEGIN消息映射宏定义////////////////////////////////////////////////////
 ///
 
-namespace zuilib
-{
+namespace zuilib {
+
 
 #define _USEIMM					1
 #define MAX_FONT_ID				30000

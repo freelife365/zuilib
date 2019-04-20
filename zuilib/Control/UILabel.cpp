@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UILabel.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	Color ARGB2Color(DWORD dwColor)
 	{
 		return Color(HIBYTE((dwColor)>>16), GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor));

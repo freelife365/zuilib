@@ -1,13 +1,11 @@
-/*
-	创建日期：	2012/11/05 15:09:48
-	作者：			daviyang35@gmail.com
-	描述：	FlashEventHandler
-*/
-#pragma once
-//#include <ExDisp.h>
 
-namespace zuilib
-{
+#ifndef __FLASH_EVENT_HANDLER_H__ 
+#define __FLASH_EVENT_HANDLER_H__
+
+#pragma once
+
+namespace zuilib {
+
 	class CFlashEventHandler
 	{
 	public:
@@ -38,3 +36,4 @@ namespace zuilib
 		}
 	};
 }
+#endif //__FLASH_EVENT_HANDLER_H__

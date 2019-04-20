@@ -3,8 +3,7 @@
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
 	class CDateTimeWnd;
 
 	/// 时间选择控件

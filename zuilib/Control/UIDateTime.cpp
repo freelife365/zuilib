@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIDateTime.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	//CDateTimeUI::m_nDTUpdateFlag
 #define DT_NONE   0
 #define DT_UPDATE 1

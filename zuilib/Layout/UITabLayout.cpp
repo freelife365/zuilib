@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UITabLayout.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CTabLayoutUI::CTabLayoutUI() : m_iCurSel(-1)
 	{
 	}

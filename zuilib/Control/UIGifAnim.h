@@ -3,8 +3,8 @@
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class CControl;
 
 #define EVENT_TIEM_ID	100

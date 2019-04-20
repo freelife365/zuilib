@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIHorizontalLayout.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CHorizontalLayoutUI::CHorizontalLayoutUI() : m_iSepWidth(0), m_uButtonState(0), m_bImmMode(false)
 	{
 		m_ptLastMouse.x = m_ptLastMouse.y = 0;

@@ -3,8 +3,8 @@
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class ZUILIB_API CSliderUI : public CProgressUI
 	{
 	public:

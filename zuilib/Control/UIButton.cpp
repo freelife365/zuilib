@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIButton.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CButtonUI::CButtonUI()
 		: m_uButtonState(0)
 		, m_dwHotTextColor(0)

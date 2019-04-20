@@ -6,8 +6,8 @@
 #include "Utils/WebBrowserEventHandler.h"
 #include <ExDisp.h>
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class ZUILIB_API CWebBrowserUI
 		: public CActiveXUI
 		, public IDocHostUIHandler

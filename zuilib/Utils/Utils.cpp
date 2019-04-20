@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Utils.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	StringOrID::StringOrID(LPCWSTR lpString) 
 		: m_lpstr(lpString)
 	{

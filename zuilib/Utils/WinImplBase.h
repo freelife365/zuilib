@@ -1,13 +1,15 @@
-#ifndef WIN_IMPL_BASE_HPP
-#define WIN_IMPL_BASE_HPP
+#ifndef __WIN_IMPL_BASE_H__
+#define __WIN_IMPL_BASE_H__
 
-namespace zuilib
-{
+#pragma once
+
+namespace zuilib {
+
 	enum UILIB_RESOURCETYPE
 	{
-		UILIB_FILE=1,				// 来自磁盘文件
-		UILIB_ZIP,						// 来自磁盘zip压缩包
-		UILIB_RESOURCE,			// 来自资源
+		UILIB_FILE=1,		// 来自磁盘文件
+		UILIB_ZIP,			// 来自磁盘zip压缩包
+		UILIB_RESOURCE,		// 来自资源
 		UILIB_ZIPRESOURCE,	// 来自资源的zip压缩包
 	};
 
@@ -72,4 +74,4 @@ namespace zuilib
 	};
 }
 
-#endif // WIN_IMPL_BASE_HPP
+#endif // __WIN_IMPL_BASE_H__

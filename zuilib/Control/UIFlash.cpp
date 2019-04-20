@@ -6,8 +6,7 @@
 #define DISPID_FLASHEVENT_FSCOMMAND	 ( 0x0096 )
 #define DISPID_FLASHEVENT_ONPROGRESS	( 0x07A6 )
 
-namespace zuilib
-{
+namespace zuilib {
 
 	CFlashUI::CFlashUI(void)
 		: m_dwRef(0)

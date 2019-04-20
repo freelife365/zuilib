@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIChildLayout.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CChildLayoutUI::CChildLayoutUI()
 	{
 

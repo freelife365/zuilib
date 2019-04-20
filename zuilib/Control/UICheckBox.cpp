@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UICheckBox.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	LPCWSTR CCheckBoxUI::GetClass() const
 	{
 		return DUI_CTR_CHECKBOX;

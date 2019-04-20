@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UIProgress.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CProgressUI::CProgressUI() 
 		: m_bHorizontal(true)
 		, m_nMin(0)

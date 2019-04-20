@@ -2,8 +2,7 @@
 #include "UITreeView.h"
 
 #pragma warning( disable: 4251 )
-namespace zuilib
-{
+namespace zuilib {
 	CTreeNodeUI::CTreeNodeUI( CTreeNodeUI* _ParentNode /*= NULL*/ )
 	{
 		m_dwItemTextColor		= 0x00000000;

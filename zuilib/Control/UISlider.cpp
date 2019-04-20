@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UISlider.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CSliderUI::CSliderUI() 
 		: m_uButtonState(0)
 		, m_nStep(1)

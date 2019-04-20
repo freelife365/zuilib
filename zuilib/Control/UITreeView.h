@@ -6,8 +6,8 @@ using namespace std;
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class CTreeViewUI;
 	class CCheckBoxUI;
 	class CLabelUI;

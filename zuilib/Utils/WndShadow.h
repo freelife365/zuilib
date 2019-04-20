@@ -26,6 +26,9 @@
 /////////////////////////////////////////////////////////////////////////////
 //****************************************************************************
 
+#ifndef __WND_SHADOW_H__
+#define __WND_SHADOW_H__
+
 #pragma once
 
 class ZUILIB_API CWndShadow
@@ -125,3 +128,4 @@ protected:
 			(GetBValue(cl) * (DWORD)nAlpha / 255);
 	}
 };
+#endif //__WND_SHADOW_H__

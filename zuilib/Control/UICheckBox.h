@@ -3,8 +3,7 @@
 
 #pragma once
 
-namespace zuilib
-{
+namespace zuilib {
 	/// 最普通的单选按钮控件，只有是、否两种结果
 	/// 派生于COptionUI，只是每组只有一个按钮而已，组名为空，配置文件默认属性举例：
 	/*

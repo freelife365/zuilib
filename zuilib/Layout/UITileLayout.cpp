@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UITileLayout.h"
 
-namespace zuilib
-{
+namespace zuilib {
+
 	CTileLayoutUI::CTileLayoutUI() 
 		: m_nColumns(1)
 		, m_nRows(0)

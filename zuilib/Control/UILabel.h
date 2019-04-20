@@ -16,8 +16,8 @@ using Gdiplus::RectF;
 using Gdiplus::GdiplusStartupInput;
 #endif
 
-namespace zuilib
-{
+namespace zuilib {
+
 	class ZUILIB_API CLabelUI : public CControlUI
 	{
 	public:
