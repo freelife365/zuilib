@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "WinImplBase.h"
 
 namespace zuilib {
 
@@ -81,6 +82,21 @@ LRESULT WindowImplBase::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 {
 	bHandled = FALSE;
 	return 0;
+}
+
+CPaintManagerUI * WindowImplBase::GetPaintManager()
+{
+	return &m_PaintManager;
+}
+
+CControlUI * WindowImplBase::FindControl(POINT pt)
+{
+	return m_PaintManager.FindControl(pt);
+}
+
+CControlUI * WindowImplBase::FindControl(LPCTSTR pstrName)
+{
+	return m_PaintManager.FindControl(pstrName);
 }
 
 #if defined(WIN32) && !defined(UNDER_CE)

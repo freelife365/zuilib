@@ -3,7 +3,7 @@
 #ifdef UILIB_STATIC
 #	define ZUILIB_API 
 #else
-#	if defined(UILIB_EXPORTS)
+#	if defined(ZUILIB_EXPORTS)
 #		if	defined(_MSC_VER)
 #			define ZUILIB_API __declspec(dllexport)
 #		else
@@ -24,7 +24,11 @@
 #define UILIB_COMDAT __declspec(selectany)
 
 #include <Windows.h>
+
 #include <windowsx.h>
+#undef GetNextSibling
+#undef GetFirstChild
+
 #include <windef.h>
 #include <CommCtrl.h>
 #include <stddef.h>
