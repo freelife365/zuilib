@@ -193,19 +193,23 @@ HRESULT InitDefaultCharFormat(CRichEditUI* re, CHARFORMAT2W* pcf, HFONT hfont)
 	::GetObject(hfont, sizeof(LOGFONT), &lf);
 
 	DWORD dwColor = re->GetTextColor();
+	if (dwColor == 0 || dwColor == 0xFF000000)
+		dwColor = 0xFF000001;
 	pcf->cbSize = sizeof(CHARFORMAT2W);
 	pcf->crTextColor = RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor));
 	LONG yPixPerInch = GetDeviceCaps(re->GetManager()->GetPaintDC(), LOGPIXELSY);
 	pcf->yHeight = -lf.lfHeight * LY_PER_INCH / yPixPerInch;
 	pcf->yOffset = 0;
 	pcf->dwEffects = 0;
-	pcf->dwMask = CFM_SIZE | CFM_OFFSET | CFM_FACE | CFM_CHARSET | CFM_COLOR | CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE;
+	pcf->dwMask = CFM_SIZE | CFM_OFFSET | CFM_FACE | CFM_CHARSET | CFM_COLOR | CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_STRIKEOUT;
 	if(lf.lfWeight >= FW_BOLD)
 		pcf->dwEffects |= CFE_BOLD;
 	if(lf.lfItalic)
 		pcf->dwEffects |= CFE_ITALIC;
 	if(lf.lfUnderline)
 		pcf->dwEffects |= CFE_UNDERLINE;
+	if(lf.lfStrikeOut)
+		pcf->dwEffects |= CFE_STRIKEOUT;
 	pcf->bCharSet = lf.lfCharSet;
 	pcf->bPitchAndFamily = lf.lfPitchAndFamily;
 	_tcscpy(pcf->szFaceName, lf.lfFaceName);
@@ -790,6 +794,8 @@ void CTxtWinHost::SetFont(HFONT hFont)
 
 void CTxtWinHost::SetColor(DWORD dwColor)
 {
+	if (dwColor == 0 || dwColor == 0xFF000000)
+		dwColor = 0xFF000001;
 	cf.crTextColor = RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor));
 	pserv->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, 
 		TXTBIT_CHARFORMATCHANGE);
@@ -1171,7 +1177,7 @@ void CRichEditUI::SetFont(int index)
 	}
 }
 
-void CRichEditUI::SetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
+void CRichEditUI::SetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut)
 {
 	if( m_pTwh ) {
 		LOGFONT lf = { 0 };
@@ -1182,6 +1188,7 @@ void CRichEditUI::SetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnd
 		if( bBold ) lf.lfWeight += FW_BOLD;
 		if( bUnderline ) lf.lfUnderline = TRUE;
 		if( bItalic ) lf.lfItalic = TRUE;
+		if( bStrikeOut ) lf.lfStrikeOut = TRUE;
 		HFONT hFont = ::CreateFontIndirect(&lf);
 		if( hFont == NULL ) return;
 		m_pTwh->SetFont(hFont);
@@ -1691,7 +1698,7 @@ HRESULT CRichEditUI::TxSendMessage(UINT msg, WPARAM wparam, LPARAM lparam, LRESU
 	if( m_pTwh ) {
 		if( msg == WM_KEYDOWN && WCHAR(wparam) == VK_RETURN ) {
 			if( !m_bWantReturn || (::GetKeyState(VK_CONTROL) < 0 && !m_bWantCtrlReturn) ) {
-				if( m_pManager != NULL ) m_pManager->SendNotify((CControlUI*)this, DUI_MSGTYPE_RETURN);
+				if( m_pManager ) m_pManager->SendNotify((CControlUI*)this, DUI_MSGTYPE_RETURN);
 				return S_OK;
 			}
 		}
@@ -1760,18 +1767,18 @@ void CRichEditUI::OnTxNotify(DWORD iNotify, void *pv)
 
 // 多行非rich格式的richedit有一个滚动条bug，在最后一行是空行时，LineDown和SetScrollPos无法滚动到最后
 // 引入iPos就是为了修正这个bug
-void CRichEditUI::SetScrollPos(SIZE szPos)
+void CRichEditUI::SetScrollPos(SIZE szPos,bool bTriggerEvent/*=true*/)
 {
 	int cx = 0;
 	int cy = 0;
 	if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 		int iLastScrollPos = m_pVerticalScrollBar->GetScrollPos();
-		m_pVerticalScrollBar->SetScrollPos(szPos.cy);
+		m_pVerticalScrollBar->SetScrollPos(szPos.cy,bTriggerEvent);
 		cy = m_pVerticalScrollBar->GetScrollPos() - iLastScrollPos;
 	}
 	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
 		int iLastScrollPos = m_pHorizontalScrollBar->GetScrollPos();
-		m_pHorizontalScrollBar->SetScrollPos(szPos.cx);
+		m_pHorizontalScrollBar->SetScrollPos(szPos.cx,bTriggerEvent);
 		cx = m_pHorizontalScrollBar->GetScrollPos() - iLastScrollPos;
 	}
 	if( cy != 0 ) {
@@ -1782,7 +1789,7 @@ void CRichEditUI::SetScrollPos(SIZE szPos)
 		TxSendMessage(WM_VSCROLL, wParam, 0L, 0);
 		if( m_pTwh && !m_bRich && m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 			if( cy > 0 && m_pVerticalScrollBar->GetScrollPos() <= iPos )
-				m_pVerticalScrollBar->SetScrollPos(iPos);
+				m_pVerticalScrollBar->SetScrollPos(iPos,bTriggerEvent);
 		}
 	}
 	if( cx != 0 ) {
@@ -1861,8 +1868,10 @@ void CRichEditUI::EndRight()
 void CRichEditUI::DoEvent(TEventUI& event)
 {
 	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-		if( m_pParent != NULL ) m_pParent->DoEvent(event);
-		else CControlUI::DoEvent(event);
+		if( m_pParent ) 
+			m_pParent->DoEvent(event);
+		else 
+			CControlUI::DoEvent(event);
 		return;
 	}
 
@@ -1954,6 +1963,19 @@ SIZE CRichEditUI::EstimateSize(SIZE szAvailable)
 
 void CRichEditUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
+	int oldW = m_rcItem.right - m_rcItem.left;
+	int oldH = m_rcItem.bottom - m_rcItem.top;
+	if (rc.right - rc.left != oldW)
+	{
+		if (m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible())
+			m_pHorizontalScrollBar->SetScrollRange(0);
+	}
+	if (rc.bottom - rc.top != oldH)
+	{
+		if (m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible())
+			m_pVerticalScrollBar->SetScrollRange(0);
+	}
+
 	CControlUI::SetPos(rc, bNeedInvalidate);
 	rc = m_rcItem;
 
@@ -1981,7 +2003,7 @@ void CRichEditUI::SetPos(RECT rc, bool bNeedInvalidate)
 		rcScrollView.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 	}
 
-	if( m_pTwh != NULL ) {
+	if( m_pTwh ) {
 		RECT rcScrollTextView = rcScrollView;
 		rcScrollTextView.left += m_rcTextPadding.left;
 		rcScrollTextView.right -= m_rcTextPadding.right;
@@ -2020,12 +2042,12 @@ void CRichEditUI::SetPos(RECT rc, bool bNeedInvalidate)
 		}
 	}
 
-	if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
+	if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 		RECT rcScrollBarPos = { rcScrollView.right, rcScrollView.top, 
 			rcScrollView.right + m_pVerticalScrollBar->GetFixedWidth(), rcScrollView.bottom};
 		m_pVerticalScrollBar->SetPos(rcScrollBarPos, false);
 	}
-	if( m_pHorizontalScrollBar != NULL && m_pHorizontalScrollBar->IsVisible() ) {
+	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
 		RECT rcScrollBarPos = { rcScrollView.left, rcScrollView.bottom, rcScrollView.right, 
 			rcScrollView.bottom + m_pHorizontalScrollBar->GetFixedHeight()};
 		m_pHorizontalScrollBar->SetPos(rcScrollBarPos, false);
@@ -2052,7 +2074,7 @@ void CRichEditUI::SetPos(RECT rc, bool bNeedInvalidate)
 void CRichEditUI::Move(SIZE szOffset, bool bNeedInvalidate)
 {
 	CContainerUI::Move(szOffset, bNeedInvalidate);
-	if( m_pTwh != NULL ) {
+	if( m_pTwh ) {
 		RECT rc = m_rcItem;
 		rc.left += m_rcInset.left;
 		rc.top += m_rcInset.top;
@@ -2163,7 +2185,7 @@ bool CRichEditUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl
 		}
 	}
 
-	if( m_pVerticalScrollBar != NULL ) {
+	if( m_pVerticalScrollBar ) {
 		if( m_pVerticalScrollBar == pStopControl ) return false;
 		if (m_pVerticalScrollBar->IsVisible()) {
 			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
@@ -2172,7 +2194,7 @@ bool CRichEditUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl
 		}
 	}
 
-	if( m_pHorizontalScrollBar != NULL ) {
+	if( m_pHorizontalScrollBar) {
 		if( m_pHorizontalScrollBar == pStopControl ) return false;
 		if (m_pHorizontalScrollBar->IsVisible()) {
 			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
@@ -2222,15 +2244,15 @@ void CRichEditUI::SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue)
 		if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_PASSWORD;
 	}
 	else if( _tcscmp(pstrName, _T("align")) == 0 ) {
-		if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+		if( _tcsstr(pstrValue, _T("left")) ) {
 			m_lTwhStyle &= ~(ES_CENTER | ES_RIGHT);
 			m_lTwhStyle |= ES_LEFT;
 		}
-		if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+		if( _tcsstr(pstrValue, _T("center")) ) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_RIGHT);
 			m_lTwhStyle |= ES_CENTER;
 		}
-		if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+		if( _tcsstr(pstrValue, _T("right")) ) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_CENTER);
 			m_lTwhStyle |= ES_RIGHT;
 		}
@@ -2246,10 +2268,10 @@ void CRichEditUI::SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue)
 	else if( _tcscmp(pstrName, _T("textpadding")) == 0 ) {
 		RECT rcTextPadding = { 0 };
 		LPTSTR pstr = NULL;
-		rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-		rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-		rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-		rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+		rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);
+		rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+		rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
+		rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 		SetTextPadding(rcTextPadding);
 	}
 	else CContainerUI::SetAttribute(pstrName, pstrValue);

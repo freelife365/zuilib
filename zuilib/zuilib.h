@@ -1,20 +1,19 @@
 #pragma once
 
 #ifdef UILIB_STATIC
-#	define ZUILIB_API 
+#define ZUILIB_API 
 #else
-#	if defined(ZUILIB_EXPORTS)
-#		if	defined(_MSC_VER)
-#			define ZUILIB_API __declspec(dllexport)
-#		else
-#			define ZUILIB_API 
-#		endif
+#if defined(ZUILIB_EXPORTS)
+#	if	defined(_MSC_VER)
+#		define ZUILIB_API __declspec(dllexport)
 #	else
-#		if defined(_MSC_VER)
-#			define ZUILIB_API __declspec(dllimport)
-#		else
-#			define ZUILIB_API 
-#		endif
+#		define ZUILIB_API 
+#	endif
+#else
+#	if defined(_MSC_VER)
+#		define ZUILIB_API __declspec(dllimport)
+#	else
+#		define ZUILIB_API 
 #	endif
 #endif
 
@@ -22,6 +21,22 @@
 //__declspec是一个Microsoft Visual C++特定的编译器属性开关；
 //此处的selectany表示在头文件定义全局变量，并且这个头文件被include多次时可以用这个开关剔除
 #define UILIB_COMDAT __declspec(selectany)
+
+#pragma warning(disable:4505)
+#pragma warning(disable:4251)
+#pragma warning(disable:4189)
+#pragma warning(disable:4121)
+#pragma warning(disable:4100)
+
+#if defined _M_IX86
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#elif defined _M_IA64
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='ia64' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#elif defined _M_X64
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#else
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#endif
 
 #include <Windows.h>
 

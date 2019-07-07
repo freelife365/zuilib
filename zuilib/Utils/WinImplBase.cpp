@@ -9,13 +9,6 @@ DUI_BEGIN_MESSAGE_MAP(WindowImplBase,CNotifyPump)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK,OnClick)
 DUI_END_MESSAGE_MAP()
 
-void WindowImplBase::OnFinalMessage( HWND hWnd )
-{
-	m_PaintManager.RemovePreMessageFilter(this);
-	m_PaintManager.RemoveNotifier(this);
-	m_PaintManager.ReapObjects(m_PaintManager.GetRoot());
-}
-
 LRESULT WindowImplBase::ResponseDefaultKeyEvent(WPARAM wParam)
 {
 	if (wParam == VK_RETURN)
@@ -319,7 +312,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 			if( dwSize == 0 )
 				return 0L;
 			m_lpResourceZIPBuffer = new BYTE[ dwSize ];
-			if (m_lpResourceZIPBuffer != NULL)
+			if (m_lpResourceZIPBuffer)
 			{
 				::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
 			}
@@ -463,6 +456,13 @@ void WindowImplBase::OnClick(TNotifyUI& msg)
 	{ 
 		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
 	}
+}
+
+void WindowImplBase::OnFinalMessage(HWND hWnd)
+{
+	m_PaintManager.RemovePreMessageFilter(this);
+	m_PaintManager.RemoveNotifier(this);
+	m_PaintManager.ReapObjects(m_PaintManager.GetRoot());
 }
 
 void WindowImplBase::Notify(TNotifyUI& msg)

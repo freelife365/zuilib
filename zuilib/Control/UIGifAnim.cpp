@@ -89,6 +89,8 @@ namespace zuilib {
 	{
 		if( event.Type == UIEVENT_TIMER )
 			OnTimer( (UINT_PTR)event.wParam );
+		else
+			CControlUI::DoEvent(event);
 	}
 
 	void CGifAnimUI::SetVisible(bool bVisible /* = true */)
@@ -218,18 +220,18 @@ namespace zuilib {
 
 	void CGifAnimUI::DeleteGif()
 	{
-		if (m_pStream != NULL )
+		if (m_pStream )
 		{
 			m_pStream->Release();
 			m_pStream = NULL;
 		}
-		if ( m_pGifImage != NULL )
+		if ( m_pGifImage )
 		{
 			delete m_pGifImage;
 			m_pGifImage = NULL;
 		}
 
-		if ( m_pPropertyItem != NULL )
+		if ( m_pPropertyItem )
 		{
 			free( m_pPropertyItem );
 			m_pPropertyItem = NULL;
@@ -257,6 +259,7 @@ namespace zuilib {
 		if ( NULL == hDC || NULL == m_pGifImage ) return;
 		GUID pageGuid = Gdiplus::FrameDimensionTime;
 		Gdiplus::Graphics graphics( hDC );
+		graphics.SetSmoothingMode(SmoothingMode::SmoothingModeHighQuality);
 		graphics.DrawImage( m_pGifImage, m_rcItem.left, m_rcItem.top, m_rcItem.right-m_rcItem.left, m_rcItem.bottom-m_rcItem.top );
 		m_pGifImage->SelectActiveFrame( &pageGuid, m_nFramePosition );
 	}
@@ -319,7 +322,11 @@ namespace zuilib {
 				FILE_ATTRIBUTE_NORMAL, NULL);
 			if( hFile == INVALID_HANDLE_VALUE ) break;
 			dwSize = ::GetFileSize(hFile, NULL);
-			if( dwSize == 0 ) break;
+			if( dwSize == 0 ) 
+			{
+				CloseHandle(hFile);
+				break;
+			}
 
 			DWORD dwRead = 0;
 			pData = new BYTE[ dwSize ];

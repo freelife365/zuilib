@@ -291,7 +291,8 @@ protected:                                                                \
 
 #define  DUI_CTR_LISTCONTAINERELEMENT            (_T("ListContainerElement"))
 
-
+#define DUI_CTR_WKEWEBKIT                         (_T("WKEWebkit"))
+#define DUI_CTR_CEFWEBKIT                         (_T("CEFWebkit"))
 ///
 //////////////END控件名称宏定义//////////////////////////////////////////////////
 

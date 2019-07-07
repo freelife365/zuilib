@@ -3,6 +3,13 @@
 
 #pragma once
 
+#include <GdiPlus.h>
+#pragma comment( lib, "GdiPlus.lib" )
+using namespace Gdiplus;
+
+class ZUILIB_API Gdiplus::RectF;
+struct ZUILIB_API Gdiplus::GdiplusStartupInput;
+
 namespace zuilib {
 
 class CControlUI;
@@ -78,6 +85,7 @@ typedef struct ZUILIB_API tagTFontInfo
 	bool bBold;
 	bool bUnderline;
 	bool bItalic;
+	bool bStrikeOut;
 	TEXTMETRIC tm;
 } TFontInfo;
 
@@ -171,7 +179,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
-using LPCREATECONTROL = CControlUI* (*)(LPCWSTR pstrType);
+using LPCREATE_CONTROL = CControlUI* (*)(LPCWSTR pstrType);
 
 class ZUILIB_API CPaintManagerUI
 {
@@ -218,10 +226,21 @@ public:
 	BYTE GetOpacity() const;
 	void SetOpacity(BYTE nOpacity);
 
+	int GetShadowSize() const;
+	void SetShadowSize(int nSize);
+	DWORD GetShadowColor() const;
+	void SetShadowColor(DWORD dwColor);
+	float GetShadowFocusScales() const;
+	void SetShadowFocusScales(float fValue);
+
 	bool IsLayered();
 	void SetLayered(bool bLayered);
-	RECT& GetLayeredInset();
-	void SetLayeredInset(RECT& rcLayeredInset);
+	//RECT& GetLayeredInset();
+	//void SetLayeredInset(RECT& rcLayeredInset);
+	RECT& GetNoLayeredPaddingRect();
+	void SetNoLayeredPaddingRect(RECT& rcValue);
+	bool IsHaveNoLayeredPaddingRect();
+
 	BYTE GetLayeredOpacity();
 	void SetLayeredOpacity(BYTE nOpacity);
 	LPCWSTR GetLayeredImage();
@@ -265,13 +284,13 @@ public:
 	void SetDefaultSelectedBkColor(DWORD dwColor, bool bShared = false);
 
 	TFontInfo* GetDefaultFontInfo();
-	void SetDefaultFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
+	void SetDefaultFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut, bool bShared = false);
 	DWORD GetCustomFontCount(bool bShared = false) const;
-	HFONT AddFont(int id, LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
+	HFONT AddFont(int id, LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut, bool bShared = false);
 	HFONT GetFont(int id);
-	HFONT GetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	HFONT GetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut);
 	int GetFontIndex(HFONT hFont, bool bShared = false);
-	int GetFontIndex(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
+	int GetFontIndex(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut, bool bShared = false);
 	void RemoveFont(HFONT hFont, bool bShared = false);
 	void RemoveFont(int id, bool bShared = false);
 	void RemoveAllFonts(bool bShared = false);
@@ -400,6 +419,8 @@ private:
 	void AdjustImagesHSL();
 	void PostAsyncNotify();
 
+	void PaintShadow();
+
 private:
 	CDuiString m_sName;
 	HWND m_hWndPaint;
@@ -438,12 +459,18 @@ private:
 	bool m_bFocusNeeded;
 	bool m_bOffscreenPaint;
 
+	int m_nShadowSize;
+	DWORD m_dwShadowColor;
+	float m_fShadowFocusScales;
+	bool m_bShadowChanged;
+
 	BYTE m_nOpacity;
 	bool m_bLayered;
-	RECT m_rcLayeredInset;
+	//RECT m_rcLayeredInset;
 	bool m_bLayeredChanged;
 	RECT m_rcLayeredUpdate;
 	TDrawInfo m_diLayered;
+	RECT m_rcNoLayeredPadding;
 
 	bool m_bMouseTracking;
 	bool m_bMouseCapture;
@@ -473,8 +500,8 @@ private:
 
 	//
 	static HINSTANCE m_hResourceInstance;
-	static CDuiString m_pStrResourcePath;
-	static CDuiString m_pStrResourceZip;
+	static CDuiString m_sResourcePath;
+	static CDuiString m_sResourceZip;
 	static HANDLE m_hResourceZip;
 
 	static bool m_bCachedResourceZip;
@@ -486,6 +513,9 @@ private:
 	static short m_L;
 	static CDuiPtrArray m_aPreMessages;
 	static CDuiPtrArray m_aPlugins;
+	
+	ULONG_PTR	m_gdiplusToken;
+	GdiplusStartupInput		m_gdiplusStartupInput;
 
 public:
 	CDuiPtrArray m_aTranslateAccelerator;

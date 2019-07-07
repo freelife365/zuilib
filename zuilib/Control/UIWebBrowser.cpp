@@ -136,7 +136,7 @@ STDMETHODIMP CWebBrowserUI::QueryInterface( REFIID riid, LPVOID *ppvObject )
 	else if (riid == IID_IOleCommandTarget)
 		*ppvObject = static_cast<IOleCommandTarget*>(this);
 
-	if( *ppvObject != NULL )
+	if( *ppvObject )
 		AddRef();
 	return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
 }
@@ -381,7 +381,7 @@ LRESULT CWebBrowserUI::TranslateAccelerator( MSG *pMsg )
 	HWND hWndFocus = ::GetFocus();
 
 	hTempWnd = hWndFocus;
-	while(hTempWnd != NULL)
+	while(hTempWnd)
 	{
 		if(hTempWnd == m_hwndHost)
 		{

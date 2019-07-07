@@ -43,7 +43,7 @@ namespace zuilib {
 	void CTextUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			if( m_pParent ) m_pParent->DoEvent(event);
 			else CLabelUI::DoEvent(event);
 			return;
 		}

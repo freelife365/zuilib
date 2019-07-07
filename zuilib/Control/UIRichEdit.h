@@ -33,7 +33,7 @@ public:
 	void SetWordWrap(bool bWordWrap = true);
 	int GetFont();
 	void SetFont(int index);
-	void SetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	void SetFont(LPCWSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bStrikeOut);
 	LONG GetWinStyle();
 	void SetWinStyle(LONG lStyle);
 	DWORD GetTextColor();
@@ -106,7 +106,7 @@ public:
 	virtual bool OnTxViewChanged();
 	virtual void OnTxNotify(DWORD iNotify, void *pv);
 
-	void SetScrollPos(SIZE szPos);
+	void SetScrollPos(SIZE szPos,bool bTriggerEvent=true);
 	void LineUp();
 	void LineDown();
 	void PageUp();

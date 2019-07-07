@@ -47,7 +47,7 @@ CMarkup::CMarkup(LPCWSTR pstrXML)
 	m_pElements = NULL;
 	m_bPreserveWhitespace = true;
 
-	if( pstrXML != NULL ) 
+	if( pstrXML  ) 
 		Load(pstrXML);
 }
 
@@ -213,9 +213,9 @@ bool CMarkup::LoadFromFile(LPCWSTR pstrFilename, int encoding)
 
 void CMarkup::Release()
 {
-	if( m_pstrXML != NULL ) 
+	if( m_pstrXML  ) 
 		free(m_pstrXML);
-	if( m_pElements != NULL ) 
+	if( m_pElements  ) 
 		free(m_pElements);
 
 	m_pstrXML = NULL;
@@ -495,10 +495,10 @@ bool CMarkup::_Failed(LPCWSTR pstrError, LPCWSTR pstrLocation)
 {
 	// Register last error
 	TRACE(_T("XML Error: %s"), pstrError);
-	if( pstrLocation != NULL ) 
+	if( pstrLocation  ) 
 		TRACE(pstrLocation);
 	_tcsncpy(m_szErrorMsg, pstrError, (sizeof(m_szErrorMsg) / sizeof(m_szErrorMsg[0])) - 1);
-	_tcsncpy(m_szErrorXML, pstrLocation != NULL ? pstrLocation : _T(""), lengthof(m_szErrorXML) - 1);
+	_tcsncpy(m_szErrorXML, pstrLocation  ? pstrLocation : _T(""), lengthof(m_szErrorXML) - 1);
 	return false; // Always return 'false'
 }
 

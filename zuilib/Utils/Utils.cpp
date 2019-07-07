@@ -201,12 +201,12 @@ namespace zuilib {
 
 	CDuiPtrArray::~CDuiPtrArray()
 	{
-		if( m_ppVoid != NULL ) free(m_ppVoid);
+		if( m_ppVoid ) free(m_ppVoid);
 	}
 
 	void CDuiPtrArray::Empty()
 	{
-		if( m_ppVoid != NULL ) free(m_ppVoid);
+		if( m_ppVoid ) free(m_ppVoid);
 		m_ppVoid = NULL;
 		m_nCount = m_nAllocated = 0;
 	}
@@ -231,7 +231,7 @@ namespace zuilib {
 			int nAllocated = m_nAllocated * 2;
 			if( nAllocated == 0 ) nAllocated = 11;
 			LPVOID* ppVoid = static_cast<LPVOID*>(realloc(m_ppVoid, nAllocated * sizeof(LPVOID)));
-			if( ppVoid != NULL ) {
+			if( ppVoid ) {
 				m_nAllocated = nAllocated;
 				m_ppVoid = ppVoid;
 			}
@@ -252,7 +252,7 @@ namespace zuilib {
 			int nAllocated = m_nAllocated * 2;
 			if( nAllocated == 0 ) nAllocated = 11;
 			LPVOID* ppVoid = static_cast<LPVOID*>(realloc(m_ppVoid, nAllocated * sizeof(LPVOID)));
-			if( ppVoid != NULL ) {
+			if( ppVoid ) {
 				m_nAllocated = nAllocated;
 				m_ppVoid = ppVoid;
 			}
@@ -322,7 +322,7 @@ namespace zuilib {
 
 	CDuiValArray::~CDuiValArray()
 	{
-		if( m_pVoid != NULL ) free(m_pVoid);
+		if( m_pVoid ) free(m_pVoid);
 	}
 
 	void CDuiValArray::Empty()
@@ -341,7 +341,7 @@ namespace zuilib {
 			int nAllocated = m_nAllocated * 2;
 			if( nAllocated == 0 ) nAllocated = 11;
 			LPBYTE pVoid = static_cast<LPBYTE>(realloc(m_pVoid, nAllocated * m_iElementSize));
-			if( pVoid != NULL ) {
+			if( pVoid ) {
 				m_nAllocated = nAllocated;
 				m_pVoid = pVoid;
 			}
@@ -385,25 +385,29 @@ namespace zuilib {
 	}
 	//////////////////////////////////////////////////////////////////////////
 
-	CDuiString::CDuiString() : m_pstr(m_szBuffer)
+	CDuiString::CDuiString() 
+		: m_pstr(m_szBuffer)
 	{
 		m_szBuffer[0] = _T('\0');
 	}
 
-	CDuiString::CDuiString(const WCHAR ch) : m_pstr(m_szBuffer)
+	CDuiString::CDuiString(const WCHAR ch) 
+		: m_pstr(m_szBuffer)
 	{
 		m_szBuffer[0] = ch;
 		m_szBuffer[1] = _T('\0');
 	}
 
-	CDuiString::CDuiString(LPCWSTR lpsz, int nLen) : m_pstr(m_szBuffer)
+	CDuiString::CDuiString(LPCWSTR lpsz, int nLen) 
+		: m_pstr(m_szBuffer)
 	{      
 		ASSERT(!::IsBadStringPtr(lpsz,-1) || lpsz==NULL);
 		m_szBuffer[0] = _T('\0');
 		Assign(lpsz, nLen);
 	}
 
-	CDuiString::CDuiString(const CDuiString& src) : m_pstr(m_szBuffer)
+	CDuiString::CDuiString(const CDuiString& src) 
+		: m_pstr(m_szBuffer)
 	{
 		m_szBuffer[0] = _T('\0');
 		Assign(src.m_pstr);
@@ -455,7 +459,8 @@ namespace zuilib {
 
 	void CDuiString::Assign(LPCWSTR pstr, int cchMax)
 	{
-		if(pstr == NULL) pstr = _T("");
+		if(pstr == NULL) 
+			pstr = _T("");
 
 		cchMax = (cchMax < 0 ? (int) _tcslen(pstr) : cchMax);
 		if( cchMax < MAX_LOCAL_STRING_LEN ) {
@@ -526,7 +531,7 @@ namespace zuilib {
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
 			int cchStr = (int) strlen(lpStr) + 1;
 			LPWSTR pwstr = (LPWSTR) _malloca(cchStr);
-			if( pwstr != NULL ) 
+			if( pwstr ) 
 				::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
 			Assign(pwstr);
 		}
@@ -544,7 +549,7 @@ namespace zuilib {
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
 			int cchStr = (int) strlen(lpStr) + 1;
 			LPWSTR pwstr = (LPWSTR)_malloca(cchStr);
-			if( pwstr != NULL ) 
+			if( pwstr ) 
 				::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
 			Append(pwstr);
 		}

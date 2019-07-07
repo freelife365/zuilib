@@ -15,7 +15,7 @@ CControlUI* CDialogBuilder::Create(StringOrID xml, LPCWSTR type, IDialogBuilderC
 	//资源ID为0-65535，两个字节；字符串指针为4个字节
 	//字符串以<开头认为是XML字符串，否则认为是XML文件
 
-	if( HIWORD(xml.m_lpstr) != NULL ) {
+	if( HIWORD(xml.m_lpstr)  ) {
 		if( *(xml.m_lpstr) == _T('<') ) {
 			if( !m_xml.Load(xml.m_lpstr) ) return NULL;
 		}
@@ -78,7 +78,8 @@ CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintMana
 						shared = (_tcsicmp(pstrValue, _T("true")) == 0);
 					}
 				}
-				if( pImageName ) pManager->AddImage(pImageName, pImageResType, mask, shared);
+				if( pImageName ) 
+					pManager->AddImage(pImageName, pImageResType, mask, shared);
 			}
 			else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
 				int id = -1;
@@ -87,6 +88,7 @@ CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintMana
 				bool bold = false;
 				bool underline = false;
 				bool italic = false;
+				bool strikeout = false;
 				bool defaultfont = false;
 				bool shared = false;
 				for (XmlAttr attr = node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -110,6 +112,9 @@ CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintMana
 					else if( _tcsicmp(pstrName, _T("italic")) == 0 ) {
 						italic = (_tcsicmp(pstrValue, _T("true")) == 0);
 					}
+					else if( _tcsicmp(pstrName, _T("strikeout")) == 0 ) {
+						strikeout = (_tcsicmp(pstrValue, _T("true")) == 0);
+					}
 					else if( _tcsicmp(pstrName, _T("default")) == 0 ) {
 						defaultfont = (_tcsicmp(pstrValue, _T("true")) == 0);
 					}
@@ -118,8 +123,8 @@ CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintMana
 					}
 				}
 				if( id >= 0 && pFontName ) {
-					pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
-					if( defaultfont ) pManager->SetDefaultFont(pFontName, size, bold, underline, italic, shared);
+					pManager->AddFont(id, pFontName, size, bold, underline, italic, strikeout, shared);
+					if( defaultfont ) pManager->SetDefaultFont(pFontName, size, bold, underline, italic, strikeout,shared);
 				}
 			}
 			else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
@@ -221,7 +226,7 @@ CControlUI* CDialogBuilder::_Parse(XmlNode* pRoot, CControlUI* pParent, CPaintMa
 			for ( int i = 0; i < count; i++ ) {
 				if (!builder.GetMarkup()->IsValid())
 				{
-					if( m_pstrtype != NULL ) { // 使用资源dll，从资源中读取
+					if( m_pstrtype  ) { // 使用资源dll，从资源中读取
 						WORD id = (WORD)_tcstol(attr.value(), &pstr, 10);
 						pControl = builder.Create((UINT)id, m_pstrtype, m_pCallback, pManager, pParent);
 					}
@@ -358,16 +363,16 @@ CControlUI* CDialogBuilder::_Parse(XmlNode* pRoot, CControlUI* pParent, CPaintMa
 			// User-supplied control factory
 			if( pControl == NULL ) {
 				CDuiPtrArray* pPlugins = CPaintManagerUI::GetPlugins();
-				LPCREATECONTROL lpCreateControl = NULL;
+				LPCREATE_CONTROL lpCreateControl = NULL;
 				for( int i = 0; i < pPlugins->GetSize(); ++i ) {
-					lpCreateControl = (LPCREATECONTROL)pPlugins->GetAt(i);
-					if( lpCreateControl != NULL ) {
+					lpCreateControl = (LPCREATE_CONTROL)pPlugins->GetAt(i);
+					if( lpCreateControl  ) {
 						pControl = lpCreateControl(pstrClass);
-						if( pControl != NULL ) break;
+						if( pControl  ) break;
 					}
 				}
 			}
-			if( pControl == NULL && m_pCallback != NULL ) {
+			if( pControl == NULL && m_pCallback  ) {
 				pControl = m_pCallback->CreateControl(pstrClass);
 			}
 		}
@@ -390,7 +395,7 @@ CControlUI* CDialogBuilder::_Parse(XmlNode* pRoot, CControlUI* pParent, CPaintMa
 
 		// Attach to parent
 		// 因为某些属性和父窗口相关，比如selected，必须先Add到父窗口
-		if( pParent != NULL ) {
+		if( pParent  ) {
 			XmlAttr attr = node.attribute(_T("cover"));
 			LPCWSTR lpValue = attr.value();
 			if( _tcscmp(lpValue, _T("true")) == 0 ) {

@@ -42,52 +42,71 @@ public:
 	void SetBkColor2(DWORD dwBackColor);
 	DWORD GetBkColor3() const;
 	void SetBkColor3(DWORD dwBackColor);
+
 	LPCWSTR GetBkImage();
 	void SetBkImage(LPCWSTR pStrImage);
+
 	DWORD GetFocusBorderColor() const;
 	void SetFocusBorderColor(DWORD dwBorderColor);
+
 	bool IsColorHSL() const;
 	void SetColorHSL(bool bColorHSL);
+
 	SIZE GetBorderRound() const;
 	void SetBorderRound(SIZE cxyRound);
+
 	bool DrawImage(HDC hDC, TDrawInfo& drawInfo);
 
 	//边框相关
 	DWORD GetBorderColor() const;
 	void SetBorderColor(DWORD dwBorderColor);
+
 	RECT GetBorderSize() const;
 	void SetBorderSize(RECT rc);
 	void SetBorderSize(int iSize);
+
 	int GetBorderStyle() const;
 	void SetBorderStyle(int nStyle);
 
 	// 位置相关
 	virtual const RECT& GetPos() const;
 	virtual RECT GetRelativePos() const; // 相对(父控件)位置
-	virtual RECT GetClientPos() const; // 客户区域（除去scrollbar和inset）
+	virtual RECT GetClientPos() const;	// 客户区域（除去scrollbar和inset）
+
 	// 只有控件为float的时候，外部调用SetPos和Move才是有效的，位置参数是相对父控件的位置
 	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
 	virtual void Move(SIZE szOffset, bool bNeedInvalidate = true);
+
 	virtual int GetWidth() const;
 	virtual int GetHeight() const;
+
 	virtual int GetX() const;
 	virtual int GetY() const;
+
 	virtual RECT GetPadding() const;
 	virtual void SetPadding(RECT rcPadding); // 设置外边距，由上层窗口绘制
+
 	virtual SIZE GetFixedXY() const;         // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
 	virtual void SetFixedXY(SIZE szXY);      // 仅float为true时有效
+
 	virtual TPercentInfo GetFloatPercent() const;
 	virtual void SetFloatPercent(TPercentInfo piFloatPercent);
+
 	virtual int GetFixedWidth() const;       // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
 	virtual void SetFixedWidth(int cx);      // 预设的参考值
+
 	virtual int GetFixedHeight() const;      // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
 	virtual void SetFixedHeight(int cy);     // 预设的参考值
+
 	virtual int GetMinWidth() const;
 	virtual void SetMinWidth(int cx);
+
 	virtual int GetMaxWidth() const;
 	virtual void SetMaxWidth(int cx);
+
 	virtual int GetMinHeight() const;
 	virtual void SetMinHeight(int cy);
+
 	virtual int GetMaxHeight() const;
 	virtual void SetMaxHeight(int cy);
 
@@ -147,7 +166,9 @@ public:
 	virtual void DoEvent(TEventUI& event);
 
 	virtual CDuiString GetAttribute(LPCWSTR pstrName);
+
 	virtual void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
+
 	virtual CDuiString GetAttributeList(bool bIgnoreDefault = true);
 	virtual void SetAttributeList(LPCWSTR pstrList);
 
@@ -176,21 +197,16 @@ public:
 	CEventSource OnPaint;
 	CEventSource OnPostPaint;
 
+private:
+	RECT GetRectFromValue(LPCWSTR pstrValue);
 protected:
 	CPaintManagerUI* m_pManager;
 	CControlUI* m_pParent;
 	CControlUI* m_pCover;
-	CDuiString m_sVirtualWnd;
-	CDuiString m_sName;
+
 	bool m_bUpdateNeeded;
 	bool m_bMenuUsed;
 	bool m_bAsyncNotify;
-	RECT m_rcItem;
-	RECT m_rcPadding;
-	SIZE m_cXY;
-	SIZE m_cxyFixed;
-	SIZE m_cxyMin;
-	SIZE m_cxyMax;
 	bool m_bVisible;
 	bool m_bInternVisible;
 	bool m_bEnabled;
@@ -198,28 +214,43 @@ protected:
 	bool m_bKeyboardEnabled ;
 	bool m_bFocused;
 	bool m_bFloat;
-	TPercentInfo m_piFloatPercent;
 	bool m_bSetPos; // 防止SetPos循环调用
+	bool m_bColorHSL;
 
+	SIZE m_cXY;
+	SIZE m_cxyFixed;
+	SIZE m_cxyMin;
+	SIZE m_cxyMax;
+	SIZE m_cxyBorderRound;
+
+	CDuiString m_sVirtualWnd;
+	CDuiString m_sName;
 	CDuiString m_sText;
 	CDuiString m_sToolTip;
-	WCHAR m_chShortcut;
 	CDuiString m_sUserData;
+
+	WCHAR m_chShortcut;
 	UINT_PTR m_pTag;
 
 	DWORD m_dwBackColor1;
 	DWORD m_dwBackColor2;
 	DWORD m_dwBackColor3;
+
 	TDrawInfo m_diBk;
 	TDrawInfo m_diFore;
 	DWORD m_dwBorderColor;
 	DWORD m_dwFocusBorderColor;
-	bool m_bColorHSL;
+	
 	int m_nBorderStyle;
 	int m_nTooltipWidth;
-	SIZE m_cxyBorderRound;
+
+	RECT m_rcItem;
+	RECT m_rcPadding;
 	RECT m_rcPaint;
 	RECT m_rcBorderSize;
+
+	TPercentInfo m_piFloatPercent;
+
 	CDuiStringPtrMap m_mCustomAttrHash;
 };
 

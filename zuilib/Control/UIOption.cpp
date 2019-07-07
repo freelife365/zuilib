@@ -3,6 +3,8 @@
 
 namespace zuilib {
 
+	extern Color ARGB2Color(DWORD dwColor);
+
 	COptionUI::COptionUI() 
 		: m_bSelected(false)
 		, m_dwSelectedBkColor(0)
@@ -73,7 +75,7 @@ namespace zuilib {
 		if( m_bSelected ) m_uButtonState |= UISTATE_SELECTED;
 		else m_uButtonState &= ~UISTATE_SELECTED;
 
-		if( m_pManager != NULL ) {
+		if( m_pManager  ) {
 			if( !m_sGroupName.IsEmpty() ) {
 				if( m_bSelected ) {
 					CDuiPtrArray* aOptionGroup = m_pManager->GetOptionGroup(m_sGroupName);
@@ -121,7 +123,7 @@ namespace zuilib {
 
 	void COptionUI::SetSelectedImage(LPCWSTR pStrImage)
 	{
-		if( m_diSelected.sDrawString == pStrImage && m_diSelected.pImageInfo != NULL ) return;
+		if( m_diSelected.sDrawString == pStrImage && m_diSelected.pImageInfo  ) return;
 		m_diSelected.Clear();
 		m_diSelected.sDrawString = pStrImage;
 		Invalidate();
@@ -134,7 +136,7 @@ namespace zuilib {
 
 	void COptionUI::SetSelectedHotImage( LPCWSTR pStrImage )
 	{
-		if( m_diSelectedHot.sDrawString == pStrImage && m_diSelectedHot.pImageInfo != NULL ) return;
+		if( m_diSelectedHot.sDrawString == pStrImage && m_diSelectedHot.pImageInfo  ) return;
 		m_diSelectedHot.Clear();
 		m_diSelectedHot.sDrawString = pStrImage;
 		Invalidate();
@@ -173,7 +175,7 @@ namespace zuilib {
 
 	void COptionUI::SetForeImage(LPCWSTR pStrImage)
 	{
-		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo != NULL ) return;
+		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo  ) return;
 		m_diFore.Clear();
 		m_diFore.sDrawString = pStrImage;
 		Invalidate();
@@ -209,32 +211,39 @@ namespace zuilib {
 
 	void COptionUI::PaintStatusImage(HDC hDC)
 	{
+		if (IsEnabled() && (m_uButtonState & UISTATE_SELECTED) != 0)
 		{
-			if ((m_uButtonState & UISTATE_SELECTED) != 0) {
-				if ((m_uButtonState & UISTATE_HOT) != 0)
-				{
-					if (DrawImage(hDC, m_diSelectedHot)) goto Label_ForeImage;
-				}
+			if (m_dwSelectedBkColor != 0)
+				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwSelectedBkColor));
 
-				if (DrawImage(hDC, m_diSelected)) goto Label_ForeImage;
-				else if (m_dwSelectedBkColor != 0) {
-					CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwSelectedBkColor));
-					goto Label_ForeImage;
+			if ((m_uButtonState & UISTATE_HOT) != 0)
+			{
+				if (DrawImage(hDC, m_diSelectedHot)) {
+					DrawImage(hDC, m_diFore);
+					return;
 				}
+					
 			}
 
-			UINT uSavedState = m_uButtonState;
-			m_uButtonState &= ~UISTATE_PUSHED;
-			CButtonUI::PaintStatusImage(hDC);
-			m_uButtonState = uSavedState;
+			if (DrawImage(hDC, m_diSelected))
+			{
+				DrawImage(hDC, m_diFore);
+				return;
+			}
+				
 		}
-Label_ForeImage:
+
+		UINT uSavedState = m_uButtonState;
+		m_uButtonState &= ~UISTATE_PUSHED;
+		CButtonUI::PaintStatusImage(hDC);
+		m_uButtonState = uSavedState;
+
 		DrawImage(hDC, m_diFore);
 	}
 
 	void COptionUI::PaintText(HDC hDC)
 	{
-		if( (m_uButtonState & UISTATE_SELECTED) != 0 )
+		if(IsEnabled() && (m_uButtonState & UISTATE_SELECTED) != 0 )
 		{
 			DWORD oldTextColor = m_dwTextColor;
 			if( m_dwSelectedTextColor != 0 ) m_dwTextColor = m_dwSelectedTextColor;
@@ -250,12 +259,36 @@ Label_ForeImage:
 			rc.top += m_rcTextPadding.top;
 			rc.bottom -= m_rcTextPadding.bottom;
 
-			if( m_bShowHtml )
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText, IsEnabled()?m_dwTextColor:m_dwDisabledTextColor, \
-				NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+			if(!GetEnabledEffect())
+			{
+				if( m_bShowHtml )
+					CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText.GetData(), IsEnabled()?m_dwTextColor:m_dwDisabledTextColor, \
+					NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+				else
+					CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText.GetData(), IsEnabled()?m_dwTextColor:m_dwDisabledTextColor, \
+					m_iFont, m_uTextStyle);
+			}
 			else
-				CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText, IsEnabled()?m_dwTextColor:m_dwDisabledTextColor, \
-				m_iFont, m_uTextStyle);
+			{
+				Font	nFont(hDC,m_pManager->GetFont(m_iFont));
+				Graphics nGraphics(hDC);
+				nGraphics.SetTextRenderingHint(GetTextRenderingAlias());
+
+				StringFormat format;
+				StringAlignment sa = StringAlignment::StringAlignmentNear;
+				if ((m_uTextStyle & DT_VCENTER) != 0) sa = StringAlignment::StringAlignmentCenter;
+				else if( (m_uTextStyle & DT_BOTTOM) != 0) sa = StringAlignment::StringAlignmentFar;
+				format.SetLineAlignment((StringAlignment)sa);
+				sa = StringAlignment::StringAlignmentNear;
+				if ((m_uTextStyle & DT_CENTER) != 0) sa = StringAlignment::StringAlignmentCenter;
+				else if( (m_uTextStyle & DT_RIGHT) != 0) sa = StringAlignment::StringAlignmentFar;
+				format.SetAlignment((StringAlignment)sa);
+				if ((m_uTextStyle & DT_SINGLELINE) != 0) format.SetFormatFlags(StringFormatFlagsNoWrap);
+
+				SolidBrush nSolidBrush(ARGB2Color(IsEnabled()?m_dwTextColor:m_dwDisabledTextColor));
+
+				nGraphics.DrawString(m_sText.GetData(),m_sText.GetLength(),&nFont,RectF((float)rc.left,(float)rc.top,(float)rc.right-rc.left,(float)rc.bottom-rc.top),&format,&nSolidBrush);
+			}
 
 			m_dwTextColor = oldTextColor;
 		}

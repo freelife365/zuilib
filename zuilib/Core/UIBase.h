@@ -4,6 +4,7 @@
 #pragma once
 
 namespace zuilib {
+
 //窗口风格属性
 #define UI_WNDSTYLE_CONTAINER  (0)
 #define UI_WNDSTYLE_FRAME      (WS_VISIBLE | WS_OVERLAPPEDWINDOW)
@@ -56,18 +57,22 @@ public:
 	CWindowWnd();
 
 	HWND GetHWND() const;
+	HWND GetSafeHWnd() const;
 	operator HWND() const;
 
 	bool RegisterWindowClass(); //RegisterClass的封装
 	bool RegisterSuperclass();
 
-	HWND Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, const RECT rc, HMENU hMenu = NULL);
-	HWND Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int cx = CW_USEDEFAULT, int cy = CW_USEDEFAULT, HMENU hMenu = NULL);
+	HWND Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, 
+		const RECT rc, HMENU hMenu = NULL);
+	HWND Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, 
+		int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int cx = CW_USEDEFAULT, int cy = CW_USEDEFAULT, HMENU hMenu = NULL);
 	HWND CreateDuiWindow(HWND hwndParent, LPCWSTR pstrWindowName,DWORD dwStyle =0, DWORD dwExStyle =0);
 	HWND Subclass(HWND hWnd);
 	void Unsubclass();
 	void ShowWindow(bool bShow = true, bool bTakeFocus = true);
 	UINT ShowModal();
+	UINT ShowModal(bool bShow, bool bTakeFocus);
 	void Close(UINT nRet = IDOK);
 	void CenterWindow();	// 居中，支持扩展屏幕
 	void SetIcon(UINT nRes);

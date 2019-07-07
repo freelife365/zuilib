@@ -13,13 +13,14 @@ namespace zuilib {
 		m_uTextStyle(DT_VCENTER|DT_SINGLELINE), 
 		m_dwTextColor(0), 
 		m_dwDisabledTextColor(0),
+		m_dwDisabledBkColor(0),
 		m_iFont(-1),
 		m_bShowHtml(false),
 		m_bNeedEstimateSize(true),
 		m_EnableEffect(false),
 		m_bEnableLuminous(false),
 		m_fLuminousFuzzy(3),
-		m_gdiplusToken(0),
+		//m_gdiplusToken(0),
 		m_dwTextColor1(-1),
 		m_dwTextShadowColorA(0xff000000),
 		m_dwTextShadowColorB(-1),
@@ -27,20 +28,21 @@ namespace zuilib {
 		m_EnabledStroke(false),
 		m_dwStrokeColor(0),
 		m_EnabledShadow(false),
-		m_GradientLength(0)
+		m_GradientLength(0),
+		m_TextRenderingAlias(TextRenderingHintAntiAlias)
 	{
-		m_ShadowOffset.X	= 0.0F;
-		m_ShadowOffset.Y	= 0.0F;
-		m_ShadowOffset.Width	= 0.0F;
-		m_ShadowOffset.Height	= 0.0F;
+		m_ShadowOffset.X		= 0.0f;
+		m_ShadowOffset.Y		= 0.0f;
+		m_ShadowOffset.Width	= 0.0f;
+		m_ShadowOffset.Height	= 0.0f;
 
 		m_cxyFixedLast.cx = m_cxyFixedLast.cy = 0;
 		m_szAvailableLast.cx = m_szAvailableLast.cy = 0;
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 
-#ifdef _USE_GDIPLUS
-		GdiplusStartup( &m_gdiplusToken,&m_gdiplusStartupInput, NULL);
-#endif
+//#ifdef _USE_GDIPLUS
+//		GdiplusStartup( &m_gdiplusToken,&m_gdiplusStartupInput, NULL);
+//#endif
 	}
 
 	CLabelUI::~CLabelUI()
@@ -48,9 +50,9 @@ namespace zuilib {
 		if( m_pWideText && m_pWideText != m_sText.GetData()) 
 			delete[] m_pWideText;
 
-#ifdef _USE_GDIPLUS
-		GdiplusShutdown( m_gdiplusToken );
-#endif
+//#ifdef _USE_GDIPLUS
+//		GdiplusShutdown( m_gdiplusToken );
+//#endif
 	}
 
 	LPCWSTR CLabelUI::GetClass() const
@@ -114,6 +116,12 @@ namespace zuilib {
 
 	void CLabelUI::SetTextColor(DWORD dwTextColor)
 	{
+		if (dwTextColor)
+		{
+			BYTE A = dwTextColor>>24;
+			if (A==0)
+				dwTextColor += 0xFF000000;
+		}
 		m_dwTextColor = dwTextColor;
 		Invalidate();
 	}
@@ -132,6 +140,17 @@ namespace zuilib {
 	DWORD CLabelUI::GetDisabledTextColor() const
 	{
 		return m_dwDisabledTextColor;
+	}
+
+	void CLabelUI::SetDisabledBkColor(DWORD dwBkColor)
+	{
+		m_dwDisabledBkColor = dwBkColor;
+		Invalidate();
+	}
+
+	DWORD CLabelUI::GetDisabledBkColor() const
+	{
+		return m_dwDisabledBkColor;
 	}
 
 	void CLabelUI::SetFont(int index)
@@ -194,10 +213,10 @@ namespace zuilib {
 					RECT rcText = { 0, 0, 9999, m_cxyFixedLast.cy };
 					if( m_bShowHtml ) {
 						int nLinks = 0;
-						CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText, 0, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
+						CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText.GetData(), 0, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
 					}
 					else {
-						CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText, 0, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
+						CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText.GetData(), 0, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
 					}
 					m_cxyFixedLast.cx = rcText.right - rcText.left + m_rcTextPadding.left + m_rcTextPadding.right;
 				}
@@ -211,13 +230,19 @@ namespace zuilib {
 				rcText.right -= m_rcTextPadding.right;
 				if( m_bShowHtml ) {
 					int nLinks = 0;
-					CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText, 0, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
+					CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText.GetData(), 0, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
 				}
 				else {
-					CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText, 0, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
+					CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_sText.GetData(), 0, m_iFont, DT_CALCRECT | m_uTextStyle & ~DT_RIGHT & ~DT_CENTER);
 				}
 				m_cxyFixedLast.cy = rcText.bottom - rcText.top + m_rcTextPadding.top + m_rcTextPadding.bottom;
 			}
+		}
+
+		//GDI+绘制所需的宽度与GDI稍微不一样,这里做个修正
+		if (m_EnableEffect)
+		{
+			m_cxyFixedLast.cx = m_cxyFixedLast.cx*1.03;	//1.03是经过测试观察的结果 //目前先修正宽度,高度待有空详测后再修正
 		}
 		return m_cxyFixedLast;
 	}
@@ -240,30 +265,30 @@ namespace zuilib {
 	void CLabelUI::SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue)
 	{
 		if( _tcscmp(pstrName, _T("align")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+			if( _tcsstr(pstrValue, _T("left"))) {
 				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT);
 				m_uTextStyle |= DT_LEFT;
 			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+			if( _tcsstr(pstrValue, _T("center"))) {
 				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT);
 				m_uTextStyle |= DT_CENTER;
 			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+			if( _tcsstr(pstrValue, _T("right"))) {
 				m_uTextStyle &= ~(DT_LEFT | DT_CENTER);
 				m_uTextStyle |= DT_RIGHT;
 			}
 		}
 		else if (_tcscmp(pstrName, _T("valign")) == 0)
 		{
-			if (_tcsstr(pstrValue, _T("top")) != NULL) {
+			if (_tcsstr(pstrValue, _T("top"))) {
 				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
 				m_uTextStyle |= DT_TOP;
 			}
-			if (_tcsstr(pstrValue, _T("vcenter")) != NULL) {
+			if (_tcsstr(pstrValue, _T("vcenter"))) {
 				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM);
 				m_uTextStyle |= DT_VCENTER;
 			}
-			if (_tcsstr(pstrValue, _T("bottom")) != NULL) {
+			if (_tcsstr(pstrValue, _T("bottom"))) {
 				m_uTextStyle &= ~(DT_TOP | DT_VCENTER);
 				m_uTextStyle |= DT_BOTTOM;
 			}
@@ -285,6 +310,12 @@ namespace zuilib {
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetDisabledTextColor(clrColor);
 		}
+		else if( _tcscmp(pstrName, _T("disabledbkcolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetDisabledBkColor(clrColor);
+		}
 		else if( _tcscmp(pstrName, _T("textpadding")) == 0 ) {
 			RECT rcTextPadding = { 0 };
 			LPTSTR pstr = NULL;
@@ -298,6 +329,7 @@ namespace zuilib {
 		else if( _tcscmp(pstrName, _T("showhtml")) == 0 ) SetShowHtml(_tcscmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("enabledeffect")) == 0 ) SetEnabledEffect(_tcscmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("enabledluminous")) == 0 ) SetEnabledLuminous(_tcscmp(pstrValue, _T("true")) == 0);
+		else if( _tcscmp(pstrName, _T("rhaa")) == 0 ) SetTextRenderingAlias(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("luminousfuzzy")) == 0 ) SetLuminousFuzzy((float)_tstof(pstrValue));
 		else if( _tcscmp(pstrName, _T("gradientangle")) == 0 ) SetGradientAngle(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("enabledstroke")) == 0 ) SetEnabledStroke(_tcscmp(pstrValue, _T("true")) == 0);
@@ -336,6 +368,61 @@ namespace zuilib {
 		else CControlUI::SetAttribute(pstrName, pstrValue);
 	}
 
+	void CLabelUI::PaintBkColor(HDC hDC)
+	{
+		if ( IsEnabled() )
+		{
+			if( m_dwBackColor1 != 0 ) {
+				if( m_dwBackColor2 != 0 ) {
+					if( m_dwBackColor3 != 0 ) {
+						RECT rc = m_rcItem;
+						rc.bottom = (rc.bottom + rc.top) / 2;
+						CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 8);
+						rc.top = rc.bottom;
+						rc.bottom = m_rcItem.bottom;
+						CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), true, 8);
+					}
+					else 
+						CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 16);
+				}
+				else if(m_dwBackColor1 >= 0xFF000000 ) 
+					CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor1));
+				else 
+					CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1));
+			}
+		}
+		else
+		{
+			if (m_dwDisabledBkColor == 0)
+			{
+				if(m_dwBackColor1 != 0 ) {
+					if( m_dwBackColor2 != 0 ) {
+						if( m_dwBackColor3 != 0 ) {
+							RECT rc = m_rcItem;
+							rc.bottom = (rc.bottom + rc.top) / 2;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 8);
+							rc.top = rc.bottom;
+							rc.bottom = m_rcItem.bottom;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), true, 8);
+						}
+						else 
+							CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 16);
+					}
+					else if(m_dwBackColor1 >= 0xFF000000 ) 
+						CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor1));
+					else 
+						CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1));
+				}
+			}
+			else
+			{
+				if( m_dwDisabledBkColor >= 0xFF000000 ) 
+					CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwDisabledBkColor));
+				else 
+					CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwDisabledBkColor));
+			}
+		}
+	}
 	void CLabelUI::PaintText(HDC hDC)
 	{
 		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
@@ -353,27 +440,26 @@ namespace zuilib {
 			int nLinks = 0;
 			if( IsEnabled() ) {
 				if( m_bShowHtml )
-					CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText, m_dwTextColor, \
+					CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText.GetData(), m_dwTextColor, \
 					NULL, NULL, nLinks, m_iFont, m_uTextStyle);
 				else
-					CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText, m_dwTextColor, \
+					CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText.GetData(), m_dwTextColor, \
 					m_iFont, m_uTextStyle);
 			}
 			else {
 				if( m_bShowHtml )
-					CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText, m_dwDisabledTextColor, \
+					CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText.GetData(), m_dwDisabledTextColor, \
 					NULL, NULL, nLinks, m_iFont, m_uTextStyle);
 				else
-					CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText, m_dwDisabledTextColor, \
+					CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText.GetData(), m_dwDisabledTextColor, \
 					m_iFont, m_uTextStyle);
 			}
 		}
 		else
 		{
-#ifdef _USE_GDIPLUS
 			Font	nFont(hDC,m_pManager->GetFont(GetFont()));
 			Graphics nGraphics(hDC);
-			nGraphics.SetTextRenderingHint(TextRenderingHintAntiAlias);
+			nGraphics.SetTextRenderingHint(GetTextRenderingAlias());
 
 			StringFormat format;
 			StringAlignment sa = StringAlignment::StringAlignmentNear;
@@ -384,6 +470,7 @@ namespace zuilib {
 			if ((m_uTextStyle & DT_CENTER) != 0) sa = StringAlignment::StringAlignmentCenter;
 			else if( (m_uTextStyle & DT_RIGHT) != 0) sa = StringAlignment::StringAlignmentFar;
 			format.SetAlignment((StringAlignment)sa);
+			if ((m_uTextStyle & DT_SINGLELINE) != 0) format.SetFormatFlags(StringFormatFlagsNoWrap);
 
 			RectF nRc((float)rc.left,(float)rc.top,(float)rc.right-rc.left,(float)rc.bottom-rc.top);
 			RectF nShadowRc = nRc;
@@ -405,12 +492,12 @@ namespace zuilib {
 				if (iFuzzyWidth < 1) iFuzzyWidth = 1;
 				int iFuzzyHeight = (int)(nRc.Height/GetLuminousFuzzy());
 				if (iFuzzyHeight < 1) iFuzzyHeight = 1;
-				RectF nTextRc(0.0F, 0.0F, nRc.Width, nRc.Height);
+				RectF nTextRc(0.0f, 0.0f, nRc.Width, nRc.Height);
 
 				Bitmap Bit1((INT)nRc.Width, (INT)nRc.Height);
 				Graphics g1(&Bit1);
 				g1.SetSmoothingMode(SmoothingModeAntiAlias);
-				g1.SetTextRenderingHint(TextRenderingHintAntiAlias);
+				g1.SetTextRenderingHint(GetTextRenderingAlias());
 				g1.SetCompositingQuality(CompositingQualityAssumeLinear);
 				Bitmap Bit2(iFuzzyWidth, iFuzzyHeight);
 				Graphics g2(&Bit2);
@@ -425,7 +512,7 @@ namespace zuilib {
 				g2.DrawImage(&Bit1, 0, 0, (int)iFuzzyWidth, (int)iFuzzyHeight);
 				g1.Clear(Color(0));
 				g1.DrawImage(&Bit2, (int)m_ShadowOffset.X, (int)m_ShadowOffset.Y, (int)nRc.Width, (int)nRc.Height);
-				g1.SetTextRenderingHint(TextRenderingHintAntiAlias);
+				g1.SetTextRenderingHint(GetTextRenderingAlias());
 
 				nGraphics.DrawImage(&Bit1, nRc.X, nRc.Y);
 			}
@@ -437,22 +524,22 @@ namespace zuilib {
 					,ARGB2Color(GetStrokeColor())
 					,ARGB2Color(GetStrokeColor()));
 
-				nRc.Offset(-1,0);
-				nGraphics.DrawString(m_sText,m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushStroke);
-				nRc.Offset(2,0);
-				nGraphics.DrawString(m_sText,m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushStroke);
-				nRc.Offset(-1,-1);
-				nGraphics.DrawString(m_sText,m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushStroke);
-				nRc.Offset(0,2);
-				nGraphics.DrawString(m_sText,m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushStroke);
-				nRc.Offset(0,-1);
+				nRc.Offset(-1, 0);
+				nGraphics.DrawString(m_sText.GetData(), m_sText.GetLength(), &nFont, nRc, &format, &nLineGrBrushStroke);
+				nRc.Offset(2, 0);
+				nGraphics.DrawString(m_sText.GetData(), m_sText.GetLength(), &nFont, nRc, &format, &nLineGrBrushStroke);
+				nRc.Offset(-1, -1);
+				nGraphics.DrawString(m_sText.GetData(), m_sText.GetLength(), &nFont, nRc, &format, &nLineGrBrushStroke);
+				nRc.Offset(0, 2);
+				nGraphics.DrawString(m_sText.GetData(), m_sText.GetLength(), &nFont, nRc, &format, &nLineGrBrushStroke);
+				nRc.Offset(0, -1);
+
 			}
 			if (GetEnabledShadow()
 				&& (GetTextShadowColorA() > 0 || GetTextShadowColorB() > 0)) {
-				nGraphics.DrawString(m_sText, m_sText.GetLength(), &nFont, nShadowRc, &format, &nLineGrBrushA);
+				nGraphics.DrawString(m_sText.GetData(), m_sText.GetLength(), &nFont, nShadowRc, &format, &nLineGrBrushA);
 			}
-			nGraphics.DrawString(m_sText,m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushB);
-#endif
+			nGraphics.DrawString(m_sText.GetData(),m_sText.GetLength(),&nFont,nRc,&format,&nLineGrBrushB);
 		}
 	}
 
@@ -495,6 +582,17 @@ namespace zuilib {
 		return m_EnableEffect;
 	}
 
+	void CLabelUI::SetTextRenderingAlias(int nTextRenderingAlias)
+	{
+		m_TextRenderingAlias = (TextRenderingHint)nTextRenderingAlias;
+		Invalidate();
+	}
+
+	TextRenderingHint CLabelUI::GetTextRenderingAlias()
+	{
+		return m_TextRenderingAlias;
+	}
+
 	void CLabelUI::SetEnabledLuminous(bool bEnableLuminous)
 	{
 		m_bEnableLuminous = bEnableLuminous;
@@ -508,7 +606,7 @@ namespace zuilib {
 
 	void CLabelUI::SetLuminousFuzzy(float fFuzzy)
 	{
-		if (fFuzzy < 0.0001F) return;
+		if (fFuzzy < 0.0001f) return;
 		m_fLuminousFuzzy = fFuzzy;
 		Invalidate();
 	}

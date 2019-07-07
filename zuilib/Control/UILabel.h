@@ -3,18 +3,18 @@
 
 #pragma once
 
-#define _USE_GDIPLUS 1
-
-#ifdef _USE_GDIPLUS
-#include <GdiPlus.h>
-#pragma comment( lib, "GdiPlus.lib" )
-
-class ZUILIB_API Gdiplus::RectF;
-struct ZUILIB_API Gdiplus::GdiplusStartupInput;
-
-using Gdiplus::RectF;
-using Gdiplus::GdiplusStartupInput;
-#endif
+//#define _USE_GDIPLUS 1
+//
+//#ifdef _USE_GDIPLUS
+//#include <GdiPlus.h>
+//#pragma comment( lib, "GdiPlus.lib" )
+//
+//class ZUILIB_API Gdiplus::RectF;
+//struct ZUILIB_API Gdiplus::GdiplusStartupInput;
+//
+//using Gdiplus::RectF;
+//using Gdiplus::GdiplusStartupInput;
+//#endif
 
 namespace zuilib {
 
@@ -42,7 +42,8 @@ namespace zuilib {
 
 		void SetDisabledTextColor(DWORD dwTextColor);
 		DWORD GetDisabledTextColor() const;
-
+		void SetDisabledBkColor(DWORD dwBkColor);
+		DWORD GetDisabledBkColor() const;
 		void SetFont(int index);
 		int GetFont() const;
 
@@ -57,10 +58,12 @@ namespace zuilib {
 		void DoEvent(TEventUI& event);
 		void SetAttribute(LPCWSTR pstrName, LPCWSTR pstrValue);
 
+		void PaintBkColor(HDC hDC);
 		void PaintText(HDC hDC);
 
-#ifdef _USE_GDIPLUS
 		void	SetEnabledEffect(bool _EnabledEffect);
+		void		SetTextRenderingAlias(int nTextRenderingAlias);
+		TextRenderingHint GetTextRenderingAlias();
 		bool	GetEnabledEffect();
 		void	SetEnabledLuminous(bool bEnableLuminous);
 		bool	GetEnabledLuminous();
@@ -84,12 +87,13 @@ namespace zuilib {
 		bool	GetEnabledStroke();
 		void	SetEnabledShadow(bool _EnabledShadowe);
 		bool	GetEnabledShadow();
-#endif
+
 	
 	protected:
 		LPWSTR  m_pWideText;
 		DWORD	m_dwTextColor;
 		DWORD	m_dwDisabledTextColor;
+		DWORD   m_dwDisabledBkColor;
 		int		m_iFont;
 		UINT	m_uTextStyle;
 		RECT	m_rcTextPadding;
@@ -110,10 +114,11 @@ namespace zuilib {
 		DWORD		m_dwTextShadowColorB;
 		DWORD		m_dwStrokeColor;
 		RectF		m_ShadowOffset;
-		ULONG_PTR	m_gdiplusToken;
-#ifdef _USE_GDIPLUS
-		GdiplusStartupInput		m_gdiplusStartupInput;
-#endif
+		TextRenderingHint		m_TextRenderingAlias; //ÎÄ×Ö¿¹¾â³Ý¼¶±ð
+//		ULONG_PTR	m_gdiplusToken;
+//#ifdef _USE_GDIPLUS
+//		GdiplusStartupInput		m_gdiplusStartupInput;
+//#endif
 	};
 }
 

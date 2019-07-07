@@ -83,7 +83,7 @@ namespace zuilib {
 
 	void CSliderUI::SetThumbImage(LPCWSTR pStrImage)
 	{
-		if( m_diThumb.sDrawString == pStrImage && m_diThumb.pImageInfo != NULL ) return;
+		if( m_diThumb.sDrawString == pStrImage && m_diThumb.pImageInfo ) return;
 		m_diThumb.Clear();
 		m_diThumb.sDrawString = pStrImage;
 		Invalidate();
@@ -96,7 +96,7 @@ namespace zuilib {
 
 	void CSliderUI::SetThumbHotImage(LPCWSTR pStrImage)
 	{
-		if( m_diThumbHot.sDrawString == pStrImage && m_diThumbHot.pImageInfo != NULL ) return;
+		if( m_diThumbHot.sDrawString == pStrImage && m_diThumbHot.pImageInfo ) return;
 		m_diThumbHot.Clear();
 		m_diThumbHot.sDrawString = pStrImage;
 		Invalidate();
@@ -109,7 +109,7 @@ namespace zuilib {
 
 	void CSliderUI::SetThumbPushedImage(LPCWSTR pStrImage)
 	{
-		if( m_diThumbPushed.sDrawString == pStrImage && m_diThumbPushed.pImageInfo != NULL ) return;
+		if( m_diThumbPushed.sDrawString == pStrImage && m_diThumbPushed.pImageInfo ) return;
 		m_diThumbPushed.Clear();
 		m_diThumbPushed.sDrawString = pStrImage;
 		Invalidate();
@@ -118,7 +118,7 @@ namespace zuilib {
 	void CSliderUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			if( m_pParent ) m_pParent->DoEvent(event);
 			else CProgressUI::DoEvent(event);
 			return;
 		}

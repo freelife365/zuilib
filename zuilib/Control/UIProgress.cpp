@@ -79,7 +79,7 @@ namespace zuilib {
 
 	void CProgressUI::SetForeImage(LPCWSTR pStrImage)
 	{
-		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo != NULL ) return;
+		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo ) return;
 		m_diFore.Clear();
 		m_diFore.sDrawString = pStrImage;
 		Invalidate();

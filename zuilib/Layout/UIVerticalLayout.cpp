@@ -31,6 +31,19 @@ namespace zuilib {
 
 	void CVerticalLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
+		int oldW = m_rcItem.right - m_rcItem.left;
+		int oldH = m_rcItem.bottom - m_rcItem.top;
+		if (rc.right - rc.left != oldW)
+		{
+			if (m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible())
+				m_pHorizontalScrollBar->SetScrollRange(0);
+		}
+		if (rc.bottom - rc.top != oldH)
+		{
+			if (m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible())
+				m_pVerticalScrollBar->SetScrollRange(0);
+		}
+
 		CControlUI::SetPos(rc, bNeedInvalidate);
 		rc = m_rcItem;
 
@@ -142,7 +155,7 @@ namespace zuilib {
 			else {
 				if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
 				if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
-				cyFixedRemaining -= sz.cy;
+				cyFixedRemaining -= sz.cy + rcPadding.top + rcPadding.bottom;
 			}
 
 			sz.cx = pControl->GetMaxWidth();
@@ -195,6 +208,7 @@ namespace zuilib {
 			RECT rcSeparator = GetThumbRect(true);
 			CRenderEngine::DrawColor(hDC, rcSeparator, 0xAA000000);
 		}
+		CContainerUI::DoPostPaint(hDC, rcPaint);
 	}
 
 	void CVerticalLayoutUI::SetSepHeight(int iHeight)
@@ -210,7 +224,7 @@ namespace zuilib {
 	void CVerticalLayoutUI::SetSepImmMode(bool bImmediately)
 	{
 		if( m_bImmMode == bImmediately ) return;
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 && !m_bImmMode && m_pManager != NULL ) {
+		if( (m_uButtonState & UISTATE_CAPTURED) != 0 && !m_bImmMode && m_pManager ) {
 			m_pManager->RemovePostPaint(this);
 		}
 

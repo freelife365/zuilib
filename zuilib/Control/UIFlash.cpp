@@ -109,7 +109,7 @@ namespace zuilib {
 		else if( riid ==  __uuidof(_IShockwaveFlashEvents))
 			*ppvObject = static_cast<_IShockwaveFlashEvents*>(this);
 
-		if( *ppvObject != NULL )
+		if( *ppvObject )
 			AddRef();
 		return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
 	}
@@ -212,7 +212,7 @@ namespace zuilib {
 		HWND hWndFocus = ::GetFocus();
 
 		hTempWnd = hWndFocus;
-		while(hTempWnd != NULL)
+		while(hTempWnd )
 		{
 			if(hTempWnd == m_hwndHost)
 			{

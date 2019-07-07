@@ -51,7 +51,7 @@ LPCWSTR DUI__TraceMsg(UINT uMsg)
 	MSGDEF(WM_GETMINMAXINFO);
 	MSGDEF(WM_CAPTURECHANGED);
 	MSGDEF(WM_WINDOWPOSCHANGED);
-	MSGDEF(WM_WINDOWPOSCHANGING);   
+	MSGDEF(WM_WINDOWPOSCHANGING);
 	MSGDEF(WM_NCCALCSIZE);
 	MSGDEF(WM_NCCREATE);
 	MSGDEF(WM_NCDESTROY);
@@ -113,7 +113,7 @@ static const DUI_MSGMAP_ENTRY* DuiFindMessageEntry(const DUI_MSGMAP_ENTRY* lpEnt
 
 bool CNotifyPump::AddVirtualWnd(CDuiString strName,CNotifyPump* pObject)
 {
-	if( m_VirtualWndMap.Find(strName) == NULL )
+	if( m_VirtualWndMap.Find(strName.GetData()) == NULL )
 	{
 		m_VirtualWndMap.Insert(strName.GetData(),(LPVOID)pObject);
 		return true;
@@ -123,9 +123,9 @@ bool CNotifyPump::AddVirtualWnd(CDuiString strName,CNotifyPump* pObject)
 
 bool CNotifyPump::RemoveVirtualWnd(CDuiString strName)
 {
-	if( m_VirtualWndMap.Find(strName) != NULL )
+	if( m_VirtualWndMap.Find(strName.GetData())  )
 	{
-		m_VirtualWndMap.Remove(strName);
+		m_VirtualWndMap.Remove(strName.GetData());
 		return true;
 	}
 	return false;
@@ -147,7 +147,7 @@ bool CNotifyPump::LoopDispatch(TNotifyUI& msg)
 #else
 		ASSERT(pMessageMap != pMessageMap->pBaseMap);
 #endif
-		if ((lpEntry = DuiFindMessageEntry(pMessageMap->lpEntries,msg)) != NULL)
+		if ((lpEntry = DuiFindMessageEntry(pMessageMap->lpEntries,msg)) )
 		{
 			goto LDispatch;
 		}
@@ -211,6 +211,11 @@ HWND CWindowWnd::GetHWND() const
 	return m_hWnd; 
 }
 
+HWND CWindowWnd::GetSafeHWnd() const
+{
+	return this == NULL ? NULL : m_hWnd;
+}
+
 UINT CWindowWnd::GetClassStyle() const
 {
 	return 0;
@@ -238,7 +243,7 @@ HWND CWindowWnd::Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD 
 
 HWND CWindowWnd::Create(HWND hwndParent, LPCWSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int cx, int cy, HMENU hMenu)
 {
-	if( GetSuperClassName() != NULL && !RegisterSuperclass() ) return NULL;
+	if( GetSuperClassName()  && !RegisterSuperclass() ) return NULL;
 	if( GetSuperClassName() == NULL && !RegisterWindowClass() ) return NULL;
 	m_hWnd = ::CreateWindowEx(
 		dwExStyle, 
@@ -276,7 +281,7 @@ void CWindowWnd::Unsubclass()
 	m_bSubclassed = false;
 }
 
-void CWindowWnd::ShowWindow(bool bShow /*= true*/, bool bTakeFocus /*= false*/)
+void CWindowWnd::ShowWindow(bool bShow /*= true*/, bool bTakeFocus /*= true*/)
 {
 	ASSERT(::IsWindow(m_hWnd));
 	if( !::IsWindow(m_hWnd) ) return;
@@ -289,6 +294,33 @@ UINT CWindowWnd::ShowModal()
 	UINT nRet = 0;
 	HWND hWndParent = GetWindowOwner(m_hWnd);
 	::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	::EnableWindow(hWndParent, FALSE);
+	MSG msg = { 0 };
+	while (::IsWindow(m_hWnd) && ::GetMessage(&msg, NULL, 0, 0)) {
+		if (msg.message == WM_CLOSE && msg.hwnd == m_hWnd) {
+			nRet = msg.wParam;
+			::EnableWindow(hWndParent, TRUE);
+			::SetFocus(hWndParent);
+		}
+		if (!CPaintManagerUI::TranslateMessage(&msg)) {
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
+		}
+		if (msg.message == WM_QUIT) break;
+	}
+	::EnableWindow(hWndParent, TRUE);
+	::SetFocus(hWndParent);
+	if (msg.message == WM_QUIT) ::PostQuitMessage(msg.wParam);
+	return nRet;
+}
+
+UINT CWindowWnd::ShowModal(bool bShow , bool bTakeFocus)
+{
+	ASSERT(::IsWindow(m_hWnd));
+	UINT nRet = 0;
+	HWND hWndParent = GetWindowOwner(m_hWnd);
+	//::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	::ShowWindow(m_hWnd, bShow ? (bTakeFocus ? SW_SHOWNORMAL : SW_SHOWNOACTIVATE) : SW_HIDE);
 	::EnableWindow(hWndParent, FALSE);
 	MSG msg = { 0 };
 	while( ::IsWindow(m_hWnd) && ::GetMessage(&msg, NULL, 0, 0) ) {
@@ -385,7 +417,7 @@ bool CWindowWnd::RegisterWindowClass()
 	wc.lpszClassName = GetWindowClassName();
 	ATOM ret = ::RegisterClass(&wc);
 	ASSERT(ret!=NULL || ::GetLastError()==ERROR_CLASS_ALREADY_EXISTS);
-	return ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
+	return ret  || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
 }
 
 bool CWindowWnd::RegisterSuperclass()
@@ -406,7 +438,7 @@ bool CWindowWnd::RegisterSuperclass()
 	wc.lpszClassName = GetWindowClassName();
 	ATOM ret = ::RegisterClassEx(&wc);
 	ASSERT(ret!=NULL || ::GetLastError()==ERROR_CLASS_ALREADY_EXISTS);
-	return ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
+	return ret  || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
 }
 
 LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -420,7 +452,7 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	} 
 	else {
 		pThis = reinterpret_cast<CWindowWnd*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
-		if( uMsg == WM_NCDESTROY && pThis != NULL ) {
+		if( uMsg == WM_NCDESTROY && pThis  ) {
 			LRESULT lRes = ::CallWindowProc(pThis->m_OldWndProc, hWnd, uMsg, wParam, lParam);
 			::SetWindowLongPtr(pThis->m_hWnd, GWLP_USERDATA, 0L);
 			if( pThis->m_bSubclassed ) pThis->Unsubclass();
@@ -429,7 +461,7 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 			return lRes;
 		}
 	}
-	if( pThis != NULL ) {
+	if( pThis  ) {
 		return pThis->HandleMessage(uMsg, wParam, lParam);
 	} 
 	else {
@@ -448,7 +480,7 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 	} 
 	else {
 		pThis = reinterpret_cast<CWindowWnd*>(::GetProp(hWnd, _T("WndX")));
-		if( uMsg == WM_NCDESTROY && pThis != NULL ) {
+		if( uMsg == WM_NCDESTROY && pThis  ) {
 			LRESULT lRes = ::CallWindowProc(pThis->m_OldWndProc, hWnd, uMsg, wParam, lParam);
 			if( pThis->m_bSubclassed ) pThis->Unsubclass();
 			::SetProp(hWnd, _T("WndX"), NULL);
@@ -457,7 +489,7 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			return lRes;
 		}
 	}
-	if( pThis != NULL ) {
+	if( pThis  ) {
 		return pThis->HandleMessage(uMsg, wParam, lParam);
 	} 
 	else {
@@ -484,7 +516,7 @@ void CWindowWnd::ResizeClient(int cx /*= -1*/, int cy /*= -1*/)
 	if( !::GetClientRect(m_hWnd, &rc) ) return;
 	if( cx != -1 ) rc.right = cx;
 	if( cy != -1 ) rc.bottom = cy;
-	if( !::AdjustWindowRectEx(&rc, GetWindowStyle(m_hWnd), (!(GetWindowStyle(m_hWnd) & WS_CHILD) && (::GetMenu(m_hWnd) != NULL)), GetWindowExStyle(m_hWnd)) ) return;
+	if( !::AdjustWindowRectEx(&rc, GetWindowStyle(m_hWnd), (!(GetWindowStyle(m_hWnd) & WS_CHILD) && (::GetMenu(m_hWnd) )), GetWindowExStyle(m_hWnd)) ) return;
 	::SetWindowPos(m_hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
 }
 

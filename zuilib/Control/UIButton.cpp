@@ -2,15 +2,19 @@
 #include "UIButton.h"
 
 namespace zuilib {
+	extern Color ARGB2Color(DWORD dwColor);
 
 	CButtonUI::CButtonUI()
 		: m_uButtonState(0)
 		, m_dwHotTextColor(0)
 		, m_dwPushedTextColor(0)
 		, m_dwFocusedTextColor(0)
+		, m_dwFocusedBkColor(0)
 		, m_dwHotBkColor(0)
+		, m_dwHotBorderColor(0)
 		, m_uFadeAlphaDelta(0)
 		, m_uFadeAlpha(255)
+		,m_sCursor(_T("hand"))
 	{
 		m_uTextStyle = DT_SINGLELINE | DT_VCENTER | DT_CENTER;
 	}
@@ -35,7 +39,7 @@ namespace zuilib {
 	void CButtonUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if (m_pParent != NULL) {
+			if (m_pParent ) {
 				m_pParent->DoEvent(event);
 			}
 			else {
@@ -55,7 +59,7 @@ namespace zuilib {
 		}
 		if( event.Type == UIEVENT_KEYDOWN )
 		{
-			if (IsKeyboardEnabled() && IsEnabled()) {
+			if (IsVisible() && IsKeyboardEnabled() && IsEnabled()) {
 				if ( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
 					Activate();
 					return;
@@ -110,6 +114,7 @@ namespace zuilib {
 						Invalidate();
 					}
 				}
+				m_pManager->SendNotify(this,DUI_MSGTYPE_MOUSEENTER);
 			}
 			if ( GetFadeAlphaDelta() > 0 ) {
 				m_pManager->SetTimer(this, FADE_TIMERID, FADE_ELLAPSE);
@@ -125,10 +130,11 @@ namespace zuilib {
 					}
 				}
 				if (m_pManager) {
+					m_pManager->SendNotify(this, DUI_MSGTYPE_MOUSELEAVE);
 					m_pManager->RemoveMouseLeaveNeeded(this);
-				}
-				if ( GetFadeAlphaDelta() > 0 ) {
-					m_pManager->SetTimer(this, FADE_TIMERID, FADE_ELLAPSE);
+					if (GetFadeAlphaDelta() > 0) {
+						m_pManager->SetTimer(this, FADE_TIMERID, FADE_ELLAPSE);
+					}
 				}
 			}
 			else {
@@ -140,7 +146,12 @@ namespace zuilib {
 		}
 		if( event.Type == UIEVENT_SETCURSOR )
 		{
-			::SetCursor(::LoadCursor(NULL, IDC_HAND));
+			if (m_sCursor == _T("arrow"))
+				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+			else if (m_sCursor == _T("hand"))
+				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+			else
+				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
 			return;
 		}
 		if( event.Type == UIEVENT_TIMER  && event.wParam == FADE_TIMERID ) 
@@ -174,7 +185,7 @@ namespace zuilib {
 		if (!CControlUI::Activate()) {
 			return false;
 		}
-		if (m_pManager != NULL) {
+		if (m_pManager ) {
 			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
 		}
 		return true;
@@ -196,6 +207,16 @@ namespace zuilib {
 	DWORD CButtonUI::GetHotBkColor() const
 	{
 		return m_dwHotBkColor;
+	}
+
+	void CButtonUI::SetHotBorderColor( DWORD dwColor )
+	{
+		m_dwHotBorderColor = dwColor;
+	}
+
+	DWORD CButtonUI::GetHotBorderColor() const
+	{
+		return m_dwHotBorderColor;
 	}
 
 	void CButtonUI::SetHotTextColor(DWORD dwColor)
@@ -228,6 +249,15 @@ namespace zuilib {
 		return m_dwFocusedTextColor;
 	}
 
+	void CButtonUI::SetFocusedBkColor(DWORD dwColor)
+	{
+		m_dwFocusedBkColor = dwColor;
+	}
+
+	DWORD CButtonUI::GetFocusedBkColor() const
+	{
+		return m_dwFocusedBkColor;
+	}
 	LPCWSTR CButtonUI::GetNormalImage()
 	{
 		return m_diNormal.sDrawString;
@@ -235,7 +265,7 @@ namespace zuilib {
 
 	void CButtonUI::SetNormalImage(LPCWSTR pStrImage)
 	{
-		if( m_diNormal.sDrawString == pStrImage && m_diNormal.pImageInfo != NULL ) 
+		if( m_diNormal.sDrawString == pStrImage && m_diNormal.pImageInfo  ) 
 			return;
 
 		m_diNormal.Clear();
@@ -250,7 +280,7 @@ namespace zuilib {
 
 	void CButtonUI::SetHotImage(LPCWSTR pStrImage)
 	{
-		if( m_diHot.sDrawString == pStrImage && m_diHot.pImageInfo != NULL ) 
+		if( m_diHot.sDrawString == pStrImage && m_diHot.pImageInfo  ) 
 			return;
 
 		m_diHot.Clear();
@@ -265,7 +295,7 @@ namespace zuilib {
 
 	void CButtonUI::SetPushedImage(LPCWSTR pStrImage)
 	{
-		if( m_diPushed.sDrawString == pStrImage && m_diPushed.pImageInfo != NULL ) 
+		if( m_diPushed.sDrawString == pStrImage && m_diPushed.pImageInfo  ) 
 			return;
 
 		m_diPushed.Clear();
@@ -280,7 +310,7 @@ namespace zuilib {
 
 	void CButtonUI::SetFocusedImage(LPCWSTR pStrImage)
 	{
-		if( m_diFocused.sDrawString == pStrImage && m_diFocused.pImageInfo != NULL ) 
+		if( m_diFocused.sDrawString == pStrImage && m_diFocused.pImageInfo  ) 
 			return;
 
 		m_diFocused.Clear();
@@ -295,7 +325,7 @@ namespace zuilib {
 
 	void CButtonUI::SetDisabledImage(LPCWSTR pStrImage)
 	{
-		if( m_diDisabled.sDrawString == pStrImage && m_diDisabled.pImageInfo != NULL ) 
+		if( m_diDisabled.sDrawString == pStrImage && m_diDisabled.pImageInfo  ) 
 			return;
 
 		m_diDisabled.Clear();
@@ -310,7 +340,7 @@ namespace zuilib {
 
 	void CButtonUI::SetForeImage( LPCWSTR pStrImage )
 	{
-		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo != NULL ) 
+		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo  ) 
 			return;
 
 		m_diFore.Clear();
@@ -325,7 +355,7 @@ namespace zuilib {
 
 	void CButtonUI::SetHotForeImage( LPCWSTR pStrImage )
 	{
-		if( m_diHotFore.sDrawString == pStrImage && m_diHotFore.pImageInfo != NULL ) 
+		if( m_diHotFore.sDrawString == pStrImage && m_diHotFore.pImageInfo  ) 
 			return;
 
 		m_diHotFore.Clear();
@@ -333,6 +363,24 @@ namespace zuilib {
 		Invalidate();
 	}
 
+	CDuiString CButtonUI::GetCursor()
+	{
+		return m_sCursor;
+	}
+
+	void CButtonUI::SetCursor(const CDuiString& strCursor)
+	{
+		m_sCursor = strCursor;
+		POINT ptMouse;
+		GetCursorPos(&ptMouse);
+		if(IsEnabled() && ::PtInRect(&m_rcItem,ptMouse))
+		{
+			if (_tcscmp(m_sCursor.GetData(),_T("arrow")) == 0)
+				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+			else if (_tcscmp(m_sCursor.GetData(),_T("hand")) == 0)
+				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+		}
+	}
 	void CButtonUI::SetFiveStatusImage(LPCWSTR pStrImage)
 	{
 		m_diNormal.Clear();
@@ -453,6 +501,14 @@ namespace zuilib {
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetFocusedTextColor(clrColor);
 		}
+		else if( _tcscmp(pstrName, _T("focusedbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetFocusedBkColor(clrColor);
+		}
+		else if (_tcscmp(pstrName, _T("cursor")) == 0)	SetCursor(pstrValue);
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
@@ -491,24 +547,136 @@ namespace zuilib {
 		else if( ((m_uButtonState & UISTATE_FOCUSED) != 0) && (GetFocusedTextColor() != 0) )
 			clrColor = GetFocusedTextColor();
 
-		if( m_bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText, clrColor, \
-			NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+		//if( m_bShowHtml )
+		//	CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText, clrColor, \
+		//	NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+		//else
+		//	CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText, clrColor, \
+		//	m_iFont, m_uTextStyle);
+
+		if(!GetEnabledEffect())
+		{
+			if( m_bShowHtml )
+				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, m_sText.GetData(), clrColor, \
+				NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+			else
+				CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText.GetData(), clrColor, \
+				m_iFont, m_uTextStyle);
+		}
 		else
-			CRenderEngine::DrawText(hDC, m_pManager, rc, m_sText, clrColor, \
-			m_iFont, m_uTextStyle);
+		{
+			Font	nFont(hDC,m_pManager->GetFont(GetFont()));
+			Graphics nGraphics(hDC);
+			nGraphics.SetTextRenderingHint(GetTextRenderingAlias());
+
+			StringFormat format;
+			StringAlignment sa = StringAlignment::StringAlignmentNear;
+			if ((m_uTextStyle & DT_VCENTER) != 0) sa = StringAlignment::StringAlignmentCenter;
+			else if( (m_uTextStyle & DT_BOTTOM) != 0) sa = StringAlignment::StringAlignmentFar;
+			format.SetLineAlignment((StringAlignment)sa);
+			sa = StringAlignment::StringAlignmentNear;
+			if ((m_uTextStyle & DT_CENTER) != 0) sa = StringAlignment::StringAlignmentCenter;
+			else if( (m_uTextStyle & DT_RIGHT) != 0) sa = StringAlignment::StringAlignmentFar;
+			format.SetAlignment((StringAlignment)sa);
+			if ((m_uTextStyle & DT_SINGLELINE) != 0) format.SetFormatFlags(StringFormatFlagsNoWrap);
+			
+			SolidBrush nSolidBrush(ARGB2Color(clrColor));
+
+#ifdef _UNICODE
+			nGraphics.DrawString(m_sText.GetData(),m_sText.GetLength(),&nFont,RectF((float)rc.left,(float)rc.top,(float)rc.right-rc.left,(float)rc.bottom-rc.top),&format,&nSolidBrush);
+#else
+			int iLen = wcslen(m_pWideText);
+			nGraphics.DrawString(m_pWideText,iLen,&nFont,RectF((float)rc.left,(float)rc.top,(float)rc.right-rc.left,(float)rc.bottom-rc.top),&format,&nSolidBrush);
+#endif	//_UNICODE
+		}
+	}
+
+	void CButtonUI::PaintBkColor(HDC hDC)
+	{
+		if ( IsEnabled() )
+		{
+			if ( IsFocused() )
+			{
+				if (m_dwFocusedBkColor == 0)
+				{
+					if( m_dwBackColor1 != 0 ) {
+						if( m_dwBackColor2 != 0 ) {
+							if( m_dwBackColor3 != 0 ) {
+								RECT rc = m_rcItem;
+								rc.bottom = (rc.bottom + rc.top) / 2;
+								CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 8);
+								rc.top = rc.bottom;
+								rc.bottom = m_rcItem.bottom;
+								CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), true, 8);
+							}
+							else 
+								CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 16);
+						}
+						else if( m_dwBackColor1 >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor1));
+						else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1));
+					}
+				}
+				else
+				{
+					if( m_dwFocusedBkColor >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwFocusedBkColor));
+					else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwFocusedBkColor));
+				}
+			}
+			else
+			{
+				if( m_dwBackColor1 != 0 ) {
+					if( m_dwBackColor2 != 0 ) {
+						if( m_dwBackColor3 != 0 ) {
+							RECT rc = m_rcItem;
+							rc.bottom = (rc.bottom + rc.top) / 2;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 8);
+							rc.top = rc.bottom;
+							rc.bottom = m_rcItem.bottom;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), true, 8);
+						}
+						else 
+							CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 16);
+					}
+					else if( m_dwBackColor1 >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor1));
+					else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1));
+				}
+			}
+		}
+		else
+		{
+			if (m_dwDisabledBkColor == 0)
+			{
+				if( m_dwBackColor1 != 0 ) {
+					if( m_dwBackColor2 != 0 ) {
+						if( m_dwBackColor3 != 0 ) {
+							RECT rc = m_rcItem;
+							rc.bottom = (rc.bottom + rc.top) / 2;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 8);
+							rc.top = rc.bottom;
+							rc.bottom = m_rcItem.bottom;
+							CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), true, 8);
+						}
+						else 
+							CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1), GetAdjustColor(m_dwBackColor2), true, 16);
+					}
+					else if( m_dwBackColor1 >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor1));
+					else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor1));
+				}
+			}
+			else
+			{
+				if( m_dwDisabledBkColor >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwDisabledBkColor));
+				else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwDisabledBkColor));
+			}
+		}
 	}
 
 	void CButtonUI::PaintStatusImage(HDC hDC)
 	{
-		if( IsFocused() )
-			m_uButtonState |= UISTATE_FOCUSED;
-		else 
-			m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) 
-			m_uButtonState |= UISTATE_DISABLED;
-		else 
-			m_uButtonState &= ~ UISTATE_DISABLED;
+		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
+		else m_uButtonState &= ~ UISTATE_FOCUSED;
+		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
+		else m_uButtonState &= ~ UISTATE_DISABLED;
 
 		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
 			if (DrawImage(hDC, m_diDisabled)) 
@@ -522,7 +690,10 @@ namespace zuilib {
 			else 
 				goto Label_ForeImage;
 		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+		else if( (m_uButtonState & UISTATE_HOT) != 0 ) 
+		{
+			if(m_dwHotBkColor != 0) 
+				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
 			if( GetFadeAlphaDelta() > 0 ) {
 				if( m_uFadeAlpha == 0 ) {
 					m_diHot.uFade = 255;
@@ -542,12 +713,8 @@ namespace zuilib {
 
 			if (DrawImage(hDC, m_diHotFore)) 
 				return;
-			else if(m_dwHotBkColor != 0) {
-				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
-				return;
-			}
-			else 
-				goto Label_ForeImage;
+			
+			else goto Label_ForeImage;
 		}
 		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
 			if (DrawImage(hDC, m_diFocused)) 
@@ -572,5 +739,90 @@ namespace zuilib {
 
 Label_ForeImage:
 		DrawImage(hDC, m_diFore);
+	}
+
+	void CButtonUI::PaintBorder(HDC hDC)
+	{
+		if( (m_rcBorderSize.left>0 || m_rcBorderSize.top>0 || m_rcBorderSize.right>0 || m_rcBorderSize.bottom>0) && (m_dwBorderColor != 0 || m_dwFocusBorderColor != 0)) 
+		{
+			if( m_cxyBorderRound.cx > 0 || m_cxyBorderRound.cy > 0 )//»­Ô²½Ç±ß¿ò
+			{
+				if (IsFocused() && m_dwFocusBorderColor != 0)
+					CRenderEngine::DrawRoundRect(hDC, m_rcItem, m_rcBorderSize.left, m_cxyBorderRound.cx, m_cxyBorderRound.cy, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);
+				else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+					CRenderEngine::DrawRoundRect(hDC, m_rcItem, m_rcBorderSize.left, m_cxyBorderRound.cx, m_cxyBorderRound.cy, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+				else
+					CRenderEngine::DrawRoundRect(hDC, m_rcItem, m_rcBorderSize.left, m_cxyBorderRound.cx, m_cxyBorderRound.cy, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+			}
+			else 
+			{
+				if (m_rcBorderSize.right == m_rcBorderSize.left && m_rcBorderSize.top == m_rcBorderSize.left && m_rcBorderSize.bottom == m_rcBorderSize.left) {
+					if (IsFocused() && m_dwFocusBorderColor != 0)
+						CRenderEngine::DrawRect(hDC, m_rcItem, m_rcBorderSize.left, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);
+					else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+						CRenderEngine::DrawRect(hDC, m_rcItem, m_rcBorderSize.left, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+					else
+						CRenderEngine::DrawRect(hDC, m_rcItem, m_rcBorderSize.left, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+				}
+				else 
+				{
+					RECT rcBorder;
+					if(m_rcBorderSize.left > 0){
+						rcBorder		= m_rcItem;
+						rcBorder.left  += m_rcBorderSize.left / 2;
+						rcBorder.right	= rcBorder.left;
+						if (IsFocused() && m_dwFocusBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.left,GetAdjustColor(m_dwFocusBorderColor),m_nBorderStyle);
+						else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.left,GetAdjustColor(m_dwHotBorderColor),m_nBorderStyle);
+						else
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.left,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(m_rcBorderSize.top > 0) {
+						rcBorder		= m_rcItem;
+						rcBorder.top   += m_rcBorderSize.top / 2;
+						rcBorder.bottom	= rcBorder.top;
+						rcBorder.left  += m_rcBorderSize.left;
+						rcBorder.right -= m_rcBorderSize.right;
+						if (IsFocused() && m_dwFocusBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.top,GetAdjustColor(m_dwFocusBorderColor),m_nBorderStyle);
+						else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.top,GetAdjustColor(m_dwHotBorderColor),m_nBorderStyle);
+						else
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.top,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(m_rcBorderSize.right > 0) {
+						rcBorder		= m_rcItem;
+						if (m_rcBorderSize.right % 2)
+							rcBorder.left	= m_rcItem.right - m_rcBorderSize.right / 2 - 1;
+						else
+							rcBorder.left	= m_rcItem.right - m_rcBorderSize.right / 2;
+						rcBorder.right  = rcBorder.left;
+						if (IsFocused() && m_dwFocusBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.right,GetAdjustColor(m_dwFocusBorderColor),m_nBorderStyle);
+						else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.right,GetAdjustColor(m_dwHotBorderColor),m_nBorderStyle);
+						else
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.right,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(m_rcBorderSize.bottom > 0) {
+						rcBorder		= m_rcItem;
+						if (m_rcBorderSize.bottom % 2)
+							rcBorder.top	= m_rcItem.bottom - m_rcBorderSize.bottom / 2 - 1;
+						else
+							rcBorder.top	= m_rcItem.bottom - m_rcBorderSize.bottom / 2;
+						rcBorder.bottom = rcBorder.top;
+						rcBorder.left  += m_rcBorderSize.left;
+						rcBorder.right -= m_rcBorderSize.right;
+						if (IsFocused() && m_dwFocusBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.bottom,GetAdjustColor(m_dwFocusBorderColor),m_nBorderStyle);
+						else if( (m_uButtonState & UISTATE_HOT) != 0 && m_dwHotBorderColor != 0)
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.bottom,GetAdjustColor(m_dwHotBorderColor),m_nBorderStyle);
+						else
+							CRenderEngine::DrawLine(hDC,rcBorder,m_rcBorderSize.bottom,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+				}
+			}
+		}
 	}
 }

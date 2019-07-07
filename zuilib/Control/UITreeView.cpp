@@ -68,7 +68,7 @@ namespace zuilib {
 	void CTreeNodeUI::DoEvent( TEventUI& event )
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pOwner != NULL ) m_pOwner->DoEvent(event);
+			if( m_pOwner ) m_pOwner->DoEvent(event);
 			else CContainerUI::DoEvent(event);
 			return;
 		}
@@ -145,7 +145,7 @@ namespace zuilib {
 						return;
 				}
 
-				if( m_pManager != NULL ) m_pManager->Invalidate(invalidateRc);
+				if( m_pManager ) m_pManager->Invalidate(invalidateRc);
 			}
 			else {
 				CContainerUI::Invalidate();
@@ -241,6 +241,11 @@ namespace zuilib {
 	bool CTreeNodeUI::IsHasChild() const
 	{
 		return !mTreeNodes.IsEmpty();
+	}
+
+	long CTreeNodeUI::GetTreeLevel() const
+	{
+		return 0;
 	}
 
 	bool CTreeNodeUI::AddChildNode( CTreeNodeUI* _pTreeNodeUI )
@@ -485,7 +490,10 @@ namespace zuilib {
 		return m_dwSelItemHotTextColor;
 	}
 
-	CTreeViewUI::CTreeViewUI( void ) : m_bVisibleFolderBtn(true),m_bVisibleCheckBtn(false),m_uItemMinWidth(0)
+	CTreeViewUI::CTreeViewUI( void ) 
+		: m_bVisibleFolderBtn(true)
+		, m_bVisibleCheckBtn(false)
+		, m_uItemMinWidth(0)
 	{
 		this->GetHeader()->SetVisible(false);
 	}
@@ -502,13 +510,16 @@ namespace zuilib {
 
 	LPVOID CTreeViewUI::GetInterface( LPCWSTR pstrName )
 	{
-		if( _tcscmp(pstrName, DUI_CTR_TREEVIEW) == 0 ) return static_cast<CTreeViewUI*>(this);
+		if( _tcscmp(pstrName, DUI_CTR_TREEVIEW) == 0 ) 
+			return static_cast<CTreeViewUI*>(this);
+
 		return CListUI::GetInterface(pstrName);
 	}
 
 	bool CTreeViewUI::Add(CControlUI* pControl)
 	{
-		if (!pControl) return false;
+		if (!pControl) 
+			return false;
 
 		CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(DUI_CTR_TREENODE));
 		if (pTreeNode == NULL) return false;

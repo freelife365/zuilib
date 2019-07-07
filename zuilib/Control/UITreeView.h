@@ -62,8 +62,8 @@ namespace zuilib {
 
 		CDuiPtrArray GetTreeNodes();
 
-		int			 GetTreeIndex();
-		int			 GetNodeIndex();
+		int	GetTreeIndex();
+		int	GetNodeIndex();
 
 	private:
 		CTreeNodeUI* GetLastNode();

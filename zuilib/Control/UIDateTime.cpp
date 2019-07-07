@@ -3,7 +3,6 @@
 
 namespace zuilib {
 
-	//CDateTimeUI::m_nDTUpdateFlag
 #define DT_NONE   0
 #define DT_UPDATE 1
 #define DT_DELETE 2
@@ -31,7 +30,10 @@ namespace zuilib {
 		bool m_bInit;
 	};
 
-	CDateTimeWnd::CDateTimeWnd() : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false)
+	CDateTimeWnd::CDateTimeWnd() 
+		: m_pOwner(NULL)
+		, m_hBkBrush(NULL)
+		, m_bInit(false)
 	{
 	}
 
@@ -88,7 +90,8 @@ namespace zuilib {
 
 	void CDateTimeWnd::OnFinalMessage(HWND hWnd) {
 		// Clear reference and die
-		if( m_hBkBrush != NULL ) ::DeleteObject(m_hBkBrush);
+		if( m_hBkBrush ) 
+			::DeleteObject(m_hBkBrush);
 		m_pOwner->GetManager()->RemoveNativeWindow(hWnd);
 		m_pOwner->m_pWindow = NULL;
 		delete this;
@@ -243,7 +246,7 @@ namespace zuilib {
 	void CDateTimeUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
 		CControlUI::SetPos(rc, bNeedInvalidate);
-		if( m_pWindow != NULL ) {
+		if( m_pWindow ) {
 			RECT rcPos = m_pWindow->CalPos();
 			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
 			else {
@@ -256,7 +259,7 @@ namespace zuilib {
 	void CDateTimeUI::Move(SIZE szOffset, bool bNeedInvalidate)
 	{
 		CControlUI::Move(szOffset, bNeedInvalidate);
-		if( m_pWindow != NULL ) {
+		if( m_pWindow ) {
 			RECT rcPos = m_pWindow->CalPos();
 			if (::IsRectEmpty(&rcPos)) ::ShowWindow(m_pWindow->GetHWND(), SW_HIDE);
 			else {
@@ -269,7 +272,7 @@ namespace zuilib {
 	void CDateTimeUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			if( m_pParent ) m_pParent->DoEvent(event);
 			else CLabelUI::DoEvent(event);
 			return;
 		}
@@ -279,10 +282,10 @@ namespace zuilib {
 			return;
 		}
 		if( event.Type == UIEVENT_WINDOWSIZE ){
-			if( m_pWindow != NULL ) m_pManager->SetFocusNeeded(this);
+			if( m_pWindow ) m_pManager->SetFocusNeeded(this);
 		}
 		if( event.Type == UIEVENT_SCROLLWHEEL ){
-			if( m_pWindow != NULL ) return;
+			if( m_pWindow ) return;
 		}
 		if( event.Type == UIEVENT_SETFOCUS && IsEnabled() ) {
 			if( m_pWindow ) return;
@@ -302,7 +305,7 @@ namespace zuilib {
 					m_pWindow = new CDateTimeWnd();
 					ASSERT(m_pWindow);
 				}
-				if( m_pWindow != NULL ){
+				if( m_pWindow ){
 					m_pWindow->Init(this);
 					m_pWindow->ShowWindow();
 				}

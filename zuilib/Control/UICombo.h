@@ -65,6 +65,11 @@ public:
 	void SetFocusedImage(LPCWSTR pStrImage);
 	LPCWSTR GetDisabledImage() const;
 	void SetDisabledImage(LPCWSTR pStrImage);
+	DWORD GetDropBorderColor() const;
+	void SetDropBorderColor(DWORD dwColor);		
+	RECT GetDropBorderSize() const;
+	void SetDropBorderSize(int iSize);
+	void SetDropBorderSize(RECT rc);
 
 	TListInfoUI* GetListInfo();
 	UINT GetItemFixedHeight();
@@ -111,6 +116,8 @@ public:
 	void SetItemVLineColor(DWORD dwLineColor);
 	bool IsItemShowHtml();
 	void SetItemShowHtml(bool bShowHtml = true);
+	void SetEnabledEffect(bool _EnabledEffect);
+	bool GetEnabledEffect();
 
 	SIZE EstimateSize(SIZE szAvailable);
 	void SetPos(RECT rc, bool bNeedInvalidate = true);
@@ -121,6 +128,8 @@ public:
 	bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	void PaintText(HDC hDC);
 	void PaintStatusImage(HDC hDC);
+	void SetTextRenderingAlias(int nTextRenderingAlias);
+	TextRenderingHint GetTextRenderingAlias();
 
 	LPCTSTR GetVscrollbar() const;
 	LPCTSTR GetHscrollbar() const;
@@ -130,6 +139,7 @@ protected:
 	CComboWnd* m_pWindow;
 
 	int m_iCurSel;
+	bool m_EnableEffect;
 	bool m_bShowText;
 	bool m_bSelectCloseFlag;
 	RECT m_rcTextPadding;
@@ -145,6 +155,8 @@ protected:
 	DWORD	m_dwTextColor;
 	DWORD	m_dwDisabledTextColor;
 	UINT	m_uTextStyle;
+	RECT m_rcDropBorderSize;
+	DWORD m_dwDropBorderColor;
 
 	TDrawInfo m_diNormal;
 	TDrawInfo m_diHot;
@@ -153,6 +165,7 @@ protected:
 	TDrawInfo m_diDisabled;
 
 	TListInfoUI m_ListInfo;
+	TextRenderingHint		m_TextRenderingAlias;	//ÎÄ×Ö¿¹¾â³Ý¼¶±ð
 };
 
 } // namespace zuilib
